@@ -1,0 +1,30 @@
+#!/usr/bin/with-contenv sh
+
+/etc/cont-init.d/01-logrotate
+chown root:root /mnt/config/etc/logrotate.conf
+chown -R root:root /mnt/config/etc/logrotate.d
+
+cd /mnt/config/log
+test -e logrotate.status || touch logrotate.status
+head -1 logrotate.status > logrotate.clean
+sed 's/"//g' logrotate.status | while read logfile date; do
+  [ -e "$logfile" ] && echo "\"$logfile\" $date"
+done >> logrotate.clean
+mv logrotate.clean logrotate.status
+chown root:root logrotate.status
+
+if [ -f /etc/conf.d/logrotate ]; then
+  . /etc/conf.d/logrotate
+fi
+
+if [ -x /usr/bin/cpulimit ] && [ -n "$CPULIMIT" ]; then
+  _cpulimit="/usr/bin/cpulimit --limit=$CPULIMIT"
+fi
+
+$_cpulimit /usr/sbin/logrotate -s /mnt/config/log/logrotate.status -v /mnt/config/etc/logrotate.conf
+EXITVALUE=$?
+
+chown guardian:users /mnt/config/etc/logrotate.conf /mnt/config/log/logrotate.status
+chown -R guardian:users /mnt/config/etc/logrotate.d
+chown -R guardian:users /mnt/config/log
+exit $EXITVALUE

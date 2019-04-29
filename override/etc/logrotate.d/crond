@@ -1,0 +1,4 @@
+/mnt/config/log/crond.log {
+	missingok
+	notifempty
+}
