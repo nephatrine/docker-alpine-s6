@@ -1,2 +1,0 @@
-#0	8	*	*	*	s6-setuidgid guardian /path/to/script
-*/5 * * * * s6-setuidgid guardian touch /mnt/config/run-root
