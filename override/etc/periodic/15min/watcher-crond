@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv sh
 
 if [ -f /mnt/config/etc/crontabs/root ]; then
-  if ! diff /var/spool/cron/crontabs/root /mnt/config/etc/crontabs/root >/dev/null; then
+  if ! diff /var/spool/cron/crontabs/root /mnt/config/etc/crontabs/root >/dev/null 2>&1; then
     crontab -u root /mnt/config/etc/crontabs/root
   fi
 elif [ -f /etc/crontabs.default.d/root ]; then
@@ -11,7 +11,7 @@ elif [ -f /var/spool/cron/crontabs/root ]; then
 fi
 
 if [ -f /mnt/config/etc/crontabs/guardian ]; then
-  if ! diff /var/spool/cron/crontabs/guardian /mnt/config/etc/crontabs/guardian >/dev/null; then
+  if ! diff /var/spool/cron/crontabs/guardian /mnt/config/etc/crontabs/guardian >/dev/null 2>&1; then
     crontab -u guardian /mnt/config/etc/crontabs/guardian
   fi
 elif [ -f /etc/crontabs.default.d/guardian ]; then
