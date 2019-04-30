@@ -38,7 +38,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  \
  && echo "====== CONFIGURE SYSTEM ======" \
  && mkdir -p /mnt/config /usr/src \
- && useradd -u 1000 -g users -d /mnt/config -s /sbin/nologin guardian \
+ && useradd -u 1000 -g users -d /mnt/config/home -s /sbin/nologin guardian \
  \
  && echo "====== COMPILE SKALIBS ======" \
  && cd /usr/src \
