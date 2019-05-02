@@ -42,12 +42,17 @@ image and are not lost on image updates.
 
 - ``/mnt/config``: Configuration & Logs. Do not share with multiple containers.
 
-You can perform some basic configuration of the container by editing these
-files and directories listed below.
+You can perform some basic configuration and troubleshooting of the container
+using the files and directories listed below.
 
-- ``/mnt/config/etc/crontabs/*``: Crontabs. It may take up to 15 minutes for changes to this file to take effect.
-- ``/mnt/config/etc/logrotate.conf``: Logrotate general configuration.
-- ``/mnt/config/etc/logrotate.d/*``: Logrotate per-application configuration.
+- ``/mnt/config/bin/``: User Scripts.
+- ``/mnt/config/etc/crontabs/<user>``: User Crontabs. [*]
+- ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
+- ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
+- ``/mnt/config/log/``: Application Logs.
+
+**[*] Changes to some configuration files may require service restart to take
+immediate effect.**
 
 Some configuration files are required for system operation and will be
 recreated with their default settings if deleted.
