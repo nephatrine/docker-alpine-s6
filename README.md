@@ -1,5 +1,5 @@
-[Gitea](https://code.nephatrine.net/nephatrine/docker-alpine-s6) |
-[DockerHub](https://hub.docker.com/r/nephatrine/alpine-s6/) |
+[Git](https://code.nephatrine.net/nephatrine/docker-alpine-s6) |
+[Docker](https://hub.docker.com/r/nephatrine/alpine-s6/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
 # Alpine, S6, & S6-Overlay (Base)
