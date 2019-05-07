@@ -42,14 +42,12 @@ image and are not lost on image updates.
 
 - ``/mnt/config``: Configuration & Logs. Do not share with multiple containers.
 
-You can perform some basic configuration and troubleshooting of the container
-using the files and directories listed below.
+You can perform some basic configuration of the container using the files and
+directories listed below.
 
-- ``/mnt/config/bin/``: User Scripts.
 - ``/mnt/config/etc/crontabs/<user>``: User Crontabs. [*]
 - ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
 - ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
-- ``/mnt/config/log/``: Application Logs.
 
 **[*] Changes to some configuration files may require service restart to take
 immediate effect.**
