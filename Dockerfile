@@ -46,7 +46,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd skalibs \
  && git fetch && git fetch --tags \
  && git checkout "$SKALIBS_VERSION" \
- && ./configure --enable-clock --enable-monotonic --disable-ipv6 \
+ && ./configure --disable-ipv6 \
  && make -j4 strip \
  && make install \
  \
@@ -56,7 +56,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd nsss \
  && git fetch && git fetch --tags \
  && git checkout "$NSSS_VERSION" \
- && ./configure \
+ && ./configure --enable-shared \
  && make -j4 strip \
  && make install \
  \
@@ -66,7 +66,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd execline \
  && git fetch && git fetch --tags \
  && git checkout "$EXECLINE_VERSION" \
- && ./configure --enable-nsss \
+ && ./configure --enable-nsss --enable-shared \
  && make -j4 strip \
  && make install \
  \
@@ -76,7 +76,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd s6 \
  && git fetch && git fetch --tags \
  && git checkout "$S6_VERSION" \
- && ./configure --enable-nsss \
+ && ./configure --enable-nsss --enable-shared \
  && make -j4 strip \
  && make install \
  \
@@ -86,7 +86,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd s6-dns \
  && git fetch && git fetch --tags \
  && git checkout "$S6_DNS_VERSION" \
- && ./configure \
+ && ./configure --enable-shared \
  && make -j4 strip \
  && make install \
  \
@@ -96,7 +96,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd s6-networking \
  && git fetch && git fetch --tags \
  && git checkout "$S6_NETWORKING_VERSION" \
- && ./configure --enable-nsss --enable-ssl=libressl \
+ && ./configure --enable-nsss --enable-shared --enable-ssl=libressl \
  && make -j4 strip \
  && make install \
  \
@@ -106,7 +106,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd s6-rc \
  && git fetch && git fetch --tags \
  && git checkout "$S6_RC_VERSION" \
- && ./configure \
+ && ./configure --enable-shared \
  && make -j4 strip \
  && make install \
  \
@@ -116,7 +116,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd s6-portable-utils \
  && git fetch && git fetch --tags \
  && git checkout "$S6_PORTABLE_VERSION" \
- && ./configure \
+ && ./configure --enable-shared \
  && make -j4 strip \
  && make install \
  \
@@ -126,7 +126,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && cd s6-linux-utils \
  && git fetch && git fetch --tags \
  && git checkout "$S6_LINUX_VERSION" \
- && ./configure --enable-nsss \
+ && ./configure --enable-nsss --enable-shared \
  && make -j4 strip \
  && make install \
  \
