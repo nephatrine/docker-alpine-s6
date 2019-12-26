@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.9
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ARG SKALIBS_VERSION=v2.8.1.0
