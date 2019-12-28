@@ -20,8 +20,11 @@ docker run -rm -ti nephatrine/alpine-s6:latest /bin/bash
 
 ## Docker Tags
 
-- **nephatrine/alpine-s6:latest**: Alpine Current Release (*alpine:latest*)
 - **nephatrine/alpine-s6:testing**: Alpine Testing Release (*alpine:edge*)
+- **nephatrine/alpine-s6:latest**: Alpine 3.11 (*alpine:3.11*)
+- **nephatrine/alpine-s6:3.10**: Alpine 3.10 (*alpine:3.10*)
+- **nephatrine/alpine-s6:3.9**: Alpine 3.9 (*alpine:3.9*)
+- **nephatrine/alpine-s6:3.8**: Alpine 3.8 (*alpine:3.8*)
 
 ## Configuration Variables
 
