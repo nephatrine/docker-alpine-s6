@@ -2,11 +2,13 @@
 [Docker](https://hub.docker.com/r/nephatrine/alpine-s6/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
+[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-alpine-s6/status.svg)](https://ci.nephatrine.net/nephatrine/docker-alpine-s6)
+
 # Alpine, S6, & S6-Overlay (Base)
 
-This docker image is Alpine Linux with the Skarnet S6 supervisor and overlay
-installed. It has no function on its own and is intended to be used as a base
-for other docker images.
+This docker base image contains Alpine Linux with the Skarnet S6 supervisor,
+and the S6 overlay installed. It has no function on its own and is intended
+to be used as a base for other docker images.
 
 - [Alpine Linux](https://alpinelinux.org/)
 - [Skarnet Software](https://skarnet.org/software/)
@@ -15,7 +17,7 @@ for other docker images.
 You can spin up a quick temporary test container like this:
 
 ~~~
-docker run -rm -ti nephatrine/alpine-s6:latest /bin/bash
+docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
 ~~~
 
 ## Docker Tags
@@ -29,8 +31,9 @@ docker run -rm -ti nephatrine/alpine-s6:latest /bin/bash
 ## Configuration Variables
 
 You can set these parameters using the syntax ``-e "VARNAME=VALUE"`` on your
-``docker run`` command. These are typically used during the container
-initialization scripts to perform initial setup.
+``docker run`` command. Some of these may only be used during initial
+configuration and further changes may need to be made in the generated
+configuration files.
 
 - ``PUID``: Mount Owner UID (*1000*)
 - ``PGID``: Mount Owner GID (*100*)
@@ -39,11 +42,14 @@ initialization scripts to perform initial setup.
 ## Persistent Mounts
 
 You can provide a persistent mountpoint using the ``-v /host/path:/container/path``
-syntax. These mountpoints are intended important configuration files, logs,
-and application state (e.g. databases) can be retained outside the container
-image and are not lost on image updates.
+syntax. These mountpoints are intended to house important configuration files,
+logs, and application state (e.g. databases) so they are not lost on image
+update.
 
-- ``/mnt/config``: Configuration & Logs. Do not share with multiple containers.
+- ``/mnt/config``: Persistent Data.
+
+Do not share ``/mnt/config`` volumes between multiple containers as they may
+interfere with the operation of one another.
 
 You can perform some basic configuration of the container using the files and
 directories listed below.
@@ -54,10 +60,3 @@ directories listed below.
 
 **[*] Changes to some configuration files may require service restart to take
 immediate effect.**
-
-Some configuration files are required for system operation and will be
-recreated with their default settings if deleted.
-
-## Network Services
-
-No ports or services exposed.
