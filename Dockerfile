@@ -1,12 +1,6 @@
 FROM alpine:3.11
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV \
- HOME="/root" \
- PS1="$(whoami)@$(hostname):$(pwd)$ " \
- S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
- S6_KILL_FINISH_MAXTIME=18000
-
 RUN echo "====== INSTALL PACKAGES ======" \
  && apk --update upgrade \
  && apk add \
@@ -83,11 +77,6 @@ RUN echo "====== COMPILE S6 ======" \
  && git checkout "$S6_LINUX_VERSION" \
  && ./configure --enable-nsss --enable-shared \
  && make -j4 strip && make install \
- && cd /usr/src && rm -rf /usr/src/* \
- && apk del --purge .build-s6 && rm -rf /var/cache/apk/*
-
-RUN echo "====== INSTALL S6-OVERLAY ======" \
- && apk add --virtual .build-overlay git \
  && cd /usr/src \
  && git clone https://github.com/just-containers/s6-overlay.git && cd s6-overlay/builder \
  && git fetch && git fetch --tags \
@@ -97,8 +86,13 @@ RUN echo "====== INSTALL S6-OVERLAY ======" \
  && cd overlay-rootfs \
  && cp -Ran ./* / \
  && cd /usr/src && rm -rf /usr/src/* \
- && apk del --purge .build-overlay && rm -rf /var/cache/apk/*
+ && apk del --purge .build-s6 && rm -rf /var/cache/apk/*
 
+ENV \
+ HOME="/root" \
+ PS1="$(whoami)@$(hostname):$(pwd)$ " \
+ S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
+ S6_KILL_FINISH_MAXTIME=18000
 RUN mkdir -p /mnt/config \
  && useradd -u 1000 -g users -d /mnt/config/home -s /sbin/nologin guardian
 
