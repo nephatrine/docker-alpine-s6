@@ -87,6 +87,7 @@ RUN echo "====== COMPILE S6 ======" \
  && apk del --purge .build-s6 && rm -rf /var/cache/apk/*
 
 RUN echo "====== INSTALL S6-OVERLAY ======" \
+ && apk add --virtual .build-overlay git \
  && cd /usr/src \
  && git clone https://github.com/just-containers/s6-overlay.git && cd s6-overlay/builder \
  && git fetch && git fetch --tags \
@@ -95,7 +96,8 @@ RUN echo "====== INSTALL S6-OVERLAY ======" \
  && bash build-here \
  && cd overlay-rootfs \
  && cp -Ran ./* / \
- && cd /usr/src && rm -rf /usr/src/*
+ && cd /usr/src && rm -rf /usr/src/* \
+ && apk del --purge .build-overlay && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /mnt/config \
  && useradd -u 1000 -g users -d /mnt/config/home -s /sbin/nologin guardian
