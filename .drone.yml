@@ -33,7 +33,7 @@ steps:
   commands:
   - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.11 .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.11
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.10 nephatrine/alpine-s6:3.11
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.11 nephatrine/alpine-s6:3.11
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.11
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.11
 - name: build-latest
