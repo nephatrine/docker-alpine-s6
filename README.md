@@ -2,7 +2,7 @@
 [Docker](https://hub.docker.com/r/nephatrine/alpine-s6/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
-[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-alpine-s6/status.svg)](https://ci.nephatrine.net/nephatrine/docker-alpine-s6)
+[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-alpine-s6/status.svg?ref=refs/heads/master)](https://ci.nephatrine.net/nephatrine/docker-alpine-s6)
 
 # Alpine, S6, & S6-Overlay (Base)
 
