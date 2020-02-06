@@ -8,13 +8,43 @@ platform:
   arch: amd64
 
 steps:
-- name: build
+- name: build-3.8
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:latest .
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.8 -f Dockerfile-3.8 .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.8
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3,8 nephatrine/alpine-s6:3.8
+  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.8
+  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.8
+- name: build-3.9
+  commands:
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.9 -f Dockerfile-3.9 .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.9
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3,9 nephatrine/alpine-s6:3.9
+  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.9
+  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.9
+- name: build-3.10
+  commands:
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.10 -f Dockerfile-3.10 .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.10
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3,10 nephatrine/alpine-s6:3.10
+  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.10
+  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.10
+- name: build-3.11
+  commands:
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.11 .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.11
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3,10 nephatrine/alpine-s6:3.11
+  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.11
+  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.11
+- name: build-latest
+  commands:
+  - docker tag nephatrine/alpine-s6:3.11 pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
+  - docker tag nephatrine/alpine-s6:3.11 nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:latest
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:latest
+  depends_on:
+  - build-3.11
 
 ---
 kind: pipeline
