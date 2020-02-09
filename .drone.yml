@@ -40,7 +40,7 @@ steps:
   commands:
   - docker tag nephatrine/alpine-s6:3.11 pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
-  - docker tag nephatrine/alpine-s6:3.11 nephatrine/alpine-s6:latest
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:latest
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:latest
   depends_on:
