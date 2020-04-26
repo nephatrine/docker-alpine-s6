@@ -8,13 +8,6 @@ platform:
   arch: amd64
 
 steps:
-- name: build-3.8
-  commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.8 -f Dockerfile-3.8 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.8
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.8 nephatrine/alpine-s6:3.8
-  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.8
-  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.8
 - name: build-3.9
   commands:
   - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.9 -f Dockerfile-3.9 .
