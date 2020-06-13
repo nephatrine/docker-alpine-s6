@@ -11,14 +11,16 @@ RUN echo "====== INSTALL PACKAGES ======" \
 
 ARG SKALIBS_VERSION=v2.9.2.1
 ARG NSSS_VERSION=v0.0.2.2
-ARG EXECLINE_VERSION=v2.6.0.1
+ARG EXECLINE_VERSION=v2.6.0.2
 ARG S6_VERSION=v2.9.1.0
 ARG S6_DNS_VERSION=v2.3.2.0
 ARG S6_NETWORKING_VERSION=v2.3.1.2
 ARG S6_RC_VERSION=v0.5.1.2
 ARG S6_PORTABLE_VERSION=v2.2.2.2
 ARG S6_LINUX_VERSION=v2.5.1.2
-ARG S6_OVERLAY_VERSION=v1.22.1.0
+
+ARG JUSTC_ENVDIR_VERSION=v1.0.0
+ARG S6_OVERLAY_VERSION=v2.0.0.1
 
 RUN echo "====== COMPILE S6 ======" \
  && mkdir /usr/src \
@@ -76,6 +78,12 @@ RUN echo "====== COMPILE S6 ======" \
  && git fetch && git fetch --tags \
  && git checkout "$S6_LINUX_VERSION" \
  && ./configure --enable-nsss --enable-shared \
+ && make -j4 strip && make install \
+ && cd /usr/src \
+ && git clone https://github.com/just-containers/justc-envdir.git && cd justc-envdir \
+ && git fetch && git fetch --tags \
+ && git checkout "$JUSTC_ENVDIR_VERSION" \
+ && ./configure --enable-shared --prefix=/usr \
  && make -j4 strip && make install \
  && cd /usr/src \
  && git clone https://github.com/just-containers/s6-overlay.git && cd s6-overlay/builder \
