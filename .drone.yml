@@ -24,20 +24,27 @@ steps:
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.10
 - name: build-3.11
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.11 .
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.11 -f Dockerfile-3.11 .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.11
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.11 nephatrine/alpine-s6:3.11
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.11
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.11
+- name: build-3.12
+  commands:
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.12 .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.12
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.12 nephatrine/alpine-s6:3.12
+  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.12
+  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.12
 - name: build-latest
   commands:
-  - docker tag nephatrine/alpine-s6:3.11 pdr.nephatrine.net/nephatrine/alpine-s6:latest
+  - docker tag nephatrine/alpine-s6:3.12 pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:latest
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:latest
   depends_on:
-  - build-3.11
+  - build-3.12
 
 ---
 kind: pipeline
@@ -51,9 +58,9 @@ steps:
     message: "Automated build of **{{repo.name}}:{{commit.branch}}** has returned [{{build.status}}]({{build.link}})."
     username: DroneCI
     webhook_id:
-      from_secret: webhook-id
+      from_secret: wh-infra-id
     webhook_token:
-      from_secret: webhook-token
+      from_secret: wh-infra-tok
 - name: trigger
   image: plugins/downstream
   settings:
@@ -68,3 +75,8 @@ steps:
 
 depends_on:
 - default
+
+trigger:
+  status:
+  - success
+  - failure
