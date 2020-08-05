@@ -89,3 +89,9 @@ steps:
 
 depends_on:
 - default
+
+---
+kind: signature
+hmac: 02dad4c6ee42b8773e99b1cef20716726bd6c223cef10265b39c776a534f62d7
+
+...
