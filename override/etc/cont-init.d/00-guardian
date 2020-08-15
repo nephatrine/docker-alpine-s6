@@ -10,6 +10,6 @@ if [[ ! -d /mnt/config/home ]]; then
   s6-setuidgid guardian mkdir -p /mnt/config/home
 
   if [[ -d /etc/skel ]]; then
-    s6-setuidgid guardian cp -Ran /etc/skel/* /mnt/config/home/
+    s6-setuidgid guardian cp -Ran /etc/skel/. /mnt/config/home/
   fi
 fi
