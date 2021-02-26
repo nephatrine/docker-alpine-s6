@@ -20,6 +20,7 @@ ARG S6_PORTABLE_VERSION=v2.2.3.0
 ARG S6_LINUX_VERSION=v2.5.1.3
 
 ARG JUSTC_ENVDIR_VERSION=v1.0.0
+ARG S6_PREINIT_VERSION=v1.0.3
 ARG S6_OVERLAY_VERSION=v2.1.0.2
 
 RUN echo "====== COMPILE S6 ======" \
@@ -85,6 +86,13 @@ RUN echo "====== COMPILE S6 ======" \
  && git checkout "$JUSTC_ENVDIR_VERSION" \
  && ./configure --enable-shared --prefix=/usr \
  && make -j4 strip && make install \
+ && cd /usr/src \
+ && git clone https://github.com/just-containers/s6-overlay-preinit.git && cd s6-overlay-preinit \
+ && git fetch && git fetch --tags \
+ && git checkout "$S6_PREINIT_VERSION" \
+ && ./configure --enable-shared --prefix=/usr \
+ && make -j4 strip && make install \
+ && ln -s /usr/bin/s6-overlay-preinit /bin/s6-overlay-preinit \
  && cd /usr/src \
  && git clone https://github.com/just-containers/s6-overlay.git && cd s6-overlay/builder \
  && git fetch && git fetch --tags \
