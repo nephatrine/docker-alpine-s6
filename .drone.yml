@@ -24,20 +24,27 @@ steps:
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.11
 - name: build-3.12
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.12 .
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.12 -f Dockerfile-3.12
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.12
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.12 nephatrine/alpine-s6:3.12
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.12
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.12
+- name: build-3.13
+  commands:
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.13 .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.13
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.12 nephatrine/alpine-s6:3.13
+  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.13
+  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.13
 - name: build-latest
   commands:
-  - docker tag nephatrine/alpine-s6:3.12 pdr.nephatrine.net/nephatrine/alpine-s6:latest
+  - docker tag nephatrine/alpine-s6:3.13 pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:latest
   - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:latest
   depends_on:
-  - build-3.12
+  - build-3.13
 
 ---
 kind: pipeline
@@ -85,6 +92,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: badaa2858878d822391b30650bc77e097dc6258e2ec87cf588643a29353e9a01
+hmac: 0d05042b1da0856862d26f841a7f4326cc4ec070c58c927178f56d475484c7c8
 
 ...
