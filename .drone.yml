@@ -8,13 +8,6 @@ platform:
   arch: amd64
 
 steps:
-- name: build-3.9
-  commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.9 -f Dockerfile-3.9 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.9
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.9 nephatrine/alpine-s6:3.9
-  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.9
-  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.9
 - name: build-3.10
   commands:
   - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.10 -f Dockerfile-3.10 .
@@ -92,6 +85,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 02dad4c6ee42b8773e99b1cef20716726bd6c223cef10265b39c776a534f62d7
+hmac: badaa2858878d822391b30650bc77e097dc6258e2ec87cf588643a29353e9a01
 
 ...
