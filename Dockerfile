@@ -11,13 +11,15 @@ RUN echo "====== INSTALL PACKAGES ======" \
 
 ARG SKALIBS_VERSION=v2.9.3.0
 ARG NSSS_VERSION=v0.0.2.2
+ARG UTMPS_VERSION=v0.0.3.2
 ARG EXECLINE_VERSION=v2.6.1.1
 ARG S6_VERSION=v2.9.2.0
+ARG S6_PORTABLE_VERSION=v2.2.3.0
+ARG S6_LINUX_VERSION=v2.5.1.3
 ARG S6_DNS_VERSION=v2.3.3.0
 ARG S6_NETWORKING_VERSION=v2.3.2.0
 ARG S6_RC_VERSION=v0.5.2.0
-ARG S6_PORTABLE_VERSION=v2.2.3.0
-ARG S6_LINUX_VERSION=v2.5.1.3
+ARG S6_INIT_VERSION=v1.0.5.1
 
 ARG JUSTC_ENVDIR_VERSION=v1.0.0
 ARG S6_PREINIT_VERSION=v1.0.3
@@ -25,7 +27,7 @@ ARG S6_OVERLAY_VERSION=v2.1.0.2
 
 RUN echo "====== COMPILE S6 ======" \
  && mkdir /usr/src \
- && apk add --virtual .build-s6 build-base git libressl-dev \
+ && apk add --virtual .build-s6 build-base git libressl-dev linux-headers \
  && cd /usr/src \
  && git clone https://github.com/skarnet/skalibs.git && cd skalibs \
  && git fetch && git fetch --tags \
@@ -39,6 +41,12 @@ RUN echo "====== COMPILE S6 ======" \
  && ./configure --enable-shared \
  && make -j4 strip && make install \
  && cd /usr/src \
+ && git clone https://github.com/skarnet/utmps.git && cd utmps \
+ && git fetch && git fetch --tags \
+ && git checkout "$UTMPS_VERSION" \
+ && ./configure --enable-nsss --enable-shared\
+ && make -j4 strip && make install \
+ && cd /usr/src \
  && git clone https://github.com/skarnet/execline.git && cd execline \
  && git fetch && git fetch --tags \
  && git checkout "$EXECLINE_VERSION" \
@@ -48,6 +56,18 @@ RUN echo "====== COMPILE S6 ======" \
  && git clone https://github.com/skarnet/s6.git && cd s6 \
  && git fetch && git fetch --tags \
  && git checkout "$S6_VERSION" \
+ && ./configure --enable-nsss --enable-shared \
+ && make -j4 strip && make install \
+ && cd /usr/src \
+ && git clone https://github.com/skarnet/s6-portable-utils.git && cd s6-portable-utils \
+ && git fetch && git fetch --tags \
+ && git checkout "$S6_PORTABLE_VERSION" \
+ && ./configure --enable-shared \
+ && make -j4 strip && make install \
+ && cd /usr/src \
+ && git clone https://github.com/skarnet/s6-linux-utils.git && cd s6-linux-utils \
+ && git fetch && git fetch --tags \
+ && git checkout "$S6_LINUX_VERSION" \
  && ./configure --enable-nsss --enable-shared \
  && make -j4 strip && make install \
  && cd /usr/src \
@@ -69,16 +89,10 @@ RUN echo "====== COMPILE S6 ======" \
  && ./configure --enable-shared \
  && make -j4 strip && make install \
  && cd /usr/src \
- && git clone https://github.com/skarnet/s6-portable-utils.git && cd s6-portable-utils \
+ && git clone https://github.com/skarnet/s6-linux-init.git && cd s6-linux-init \
  && git fetch && git fetch --tags \
- && git checkout "$S6_PORTABLE_VERSION" \
- && ./configure --enable-shared \
- && make -j4 strip && make install \
- && cd /usr/src \
- && git clone https://github.com/skarnet/s6-linux-utils.git && cd s6-linux-utils \
- && git fetch && git fetch --tags \
- && git checkout "$S6_LINUX_VERSION" \
- && ./configure --enable-nsss --enable-shared \
+ && git checkout "$S6_INIT_VERSION" \
+ && ./configure --enable-nsss --enable-shared --enable-utmps \
  && make -j4 strip && make install \
  && cd /usr/src \
  && git clone https://github.com/just-containers/justc-envdir.git && cd justc-envdir \
@@ -90,9 +104,8 @@ RUN echo "====== COMPILE S6 ======" \
  && git clone https://github.com/just-containers/s6-overlay-preinit.git && cd s6-overlay-preinit \
  && git fetch && git fetch --tags \
  && git checkout "$S6_PREINIT_VERSION" \
- && ./configure --enable-shared --prefix=/usr \
+ && ./configure --enable-shared \
  && make -j4 strip && make install \
- && ln -s /usr/bin/s6-overlay-preinit /bin/s6-overlay-preinit \
  && cd /usr/src \
  && git clone https://github.com/just-containers/s6-overlay.git && cd s6-overlay/builder \
  && git fetch && git fetch --tags \
