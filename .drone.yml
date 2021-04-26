@@ -86,6 +86,7 @@ steps:
       - nephatrine/docker-drone-ci@master
       - nephatrine/docker-gitea-web@master
       - nephatrine/docker-minecraft-mcu@master
+      - nephatrine/docker-nginx-ssl@master
       - nephatrine/docker-registry@master
 
 depends_on:
@@ -93,6 +94,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: a296d484fd2462e33fe369cbb1edd51b13a95d60cfe2f7f7b4f07994f907db75
+hmac: c72cd876da1830fd237bc6046151cd78b95fea82ac271f7cb17027ca23f46799
 
 ...
