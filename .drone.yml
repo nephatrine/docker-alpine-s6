@@ -10,32 +10,20 @@ platform:
 steps:
 - name: build-3.10
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.10 -f Dockerfile-3.10 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.10
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.10 nephatrine/alpine-s6:3.10
+  - docker build --pull -t nephatrine/alpine-s6:3.10 -f Dockerfile-3.10 .
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.10
-  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.10
 - name: build-3.11
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.11 -f Dockerfile-3.11 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.11
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.11 nephatrine/alpine-s6:3.11
+  - docker build --pull -t nephatrine/alpine-s6:3.11 -f Dockerfile-3.11 .
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.11
-  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.11
 - name: build-3.12
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.12 -f Dockerfile-3.12 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.12
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.12 nephatrine/alpine-s6:3.12
+  - docker build --pull -t nephatrine/alpine-s6:3.12 -f Dockerfile-3.12 .
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.12
-  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.12
 - name: build-3.13
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.13 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.13
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.13 nephatrine/alpine-s6:3.13
+  - docker build --pull -t nephatrine/alpine-s6:3.13 .
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.13
-  - docker rmi pdr.nephatrine.net/nephatrine/alpine-s6:3.13
 - name: build-latest
   commands:
   - docker tag nephatrine/alpine-s6:3.13 pdr.nephatrine.net/nephatrine/alpine-s6:latest
@@ -86,7 +74,7 @@ steps:
       - nephatrine/docker-drone-ci@master
       - nephatrine/docker-gitea-web@master
       - nephatrine/docker-minecraft-mcu@master
-      - nephatrine/docker-nginx-ssl@1.20
+      - nephatrine/docker-nginx-ssl@stable
       - nephatrine/docker-nginx-ssl@master
       - nephatrine/docker-registry@master
 
@@ -95,6 +83,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: df91de147d1872ca9d6964f469bd793ab2a804e3de2eff7947b2baa59134a1c9
+hmac: d2d53831ce5b086430f3dae9b334f9d60026270a3f7c44ab507adcba732bbae1
 
 ...
