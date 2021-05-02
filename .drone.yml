@@ -8,18 +8,6 @@ platform:
   arch: amd64
 
 steps:
-- name: build-3.10
-  commands:
-  - docker build --pull -t nephatrine/alpine-s6:3.10 -f Dockerfile-3.10 .
-  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.10
-- name: build-3.11
-  commands:
-  - docker build --pull -t nephatrine/alpine-s6:3.11 -f Dockerfile-3.11 .
-  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.11
-- name: build-3.12
-  commands:
-  - docker build --pull -t nephatrine/alpine-s6:3.12 -f Dockerfile-3.12 .
-  - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.12
 - name: build-3.13
   commands:
   - docker build --pull -t nephatrine/alpine-s6:3.13 .
@@ -42,7 +30,7 @@ steps:
 - name: notify
   image: appleboy/drone-discord
   settings:
-    avatar_url: https://files.nephatrine.net/Images/Buttons/Drone.png
+    avatar_url: https://nephatrine.net/images/buttons/drone-ci.png
     message: "Automated build of **{{repo.name}}:{{commit.branch}}** has returned [{{build.status}}]({{build.link}})."
     username: DroneCI
     webhook_id:
@@ -83,6 +71,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: d2d53831ce5b086430f3dae9b334f9d60026270a3f7c44ab507adcba732bbae1
+hmac: d5ca3f27462eb1ae2f645f6e73a5ccdda4c0852c2f96dac91edca14168d54796
 
 ...
