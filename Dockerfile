@@ -9,17 +9,17 @@ RUN echo "====== INSTALL PACKAGES ======" \
    logrotate make \
  && rm -rf /var/cache/apk/*
 
-ARG SKALIBS_VERSION=v2.10.0.2
-ARG NSSS_VERSION=v0.1.0.0
-ARG UTMPS_VERSION=v0.1.0.0
-ARG EXECLINE_VERSION=v2.7.0.1
-ARG S6_VERSION=v2.10.0.2
-ARG S6_PORTABLE_VERSION=v2.2.3.1
-ARG S6_LINUX_VERSION=v2.5.1.4
-ARG S6_DNS_VERSION=v2.3.5.0
-ARG S6_NETWORKING_VERSION=v2.4.1.0
-ARG S6_RC_VERSION=v0.5.2.1
-ARG S6_INIT_VERSION=v1.0.6.1
+ARG SKALIBS_VERSION=v2.10.0.3
+ARG NSSS_VERSION=v0.1.0.1
+ARG UTMPS_VERSION=v0.1.0.2
+ARG EXECLINE_VERSION=v2.8.0.1
+ARG S6_VERSION=v2.10.0.3
+ARG S6_PORTABLE_VERSION=v2.2.3.2
+ARG S6_LINUX_VERSION=v2.5.1.5
+ARG S6_DNS_VERSION=v2.3.5.1
+ARG S6_NETWORKING_VERSION=v2.4.1.1
+ARG S6_RC_VERSION=v0.5.2.2
+ARG S6_INIT_VERSION=v1.0.6.3
 
 ARG ENVDIR_VERSION=v1.0.1-1
 ARG S6_PREINIT_VERSION=v1.0.5
@@ -32,10 +32,10 @@ RUN echo "====== COMPILE S6 ======" \
  && ./configure --disable-ipv6 \
  && make -j4 strip && make install \
  && git -C /usr/src clone -b "$NSSS_VERSION" --single-branch --depth=1 https://github.com/skarnet/nsss.git && cd /usr/src/nsss \
- && ./configure --enable-shared \
+ && ./configure --enable-libc-includes --enable-shared \
  && make -j4 strip && make install \
  && git -C /usr/src clone -b "$UTMPS_VERSION" --single-branch --depth=1 https://github.com/skarnet/utmps.git && cd /usr/src/utmps \
- && ./configure --enable-nsss --enable-shared\
+ && ./configure --enable-libc-includes --enable-nsss --enable-shared\
  && make -j4 strip && make install \
  && git -C /usr/src clone -b "$EXECLINE_VERSION" --single-branch --depth=1 https://github.com/skarnet/execline.git && cd /usr/src/execline \
  && ./configure --enable-nsss --enable-shared \
