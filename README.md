@@ -22,11 +22,12 @@ docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
 
 ## Docker Tags
 
-- **nephatrine/alpine-s6:testing**: Alpine Testing Release (*alpine:edge*)
-- **nephatrine/alpine-s6:latest**: Alpine 3.13 (*alpine:3.13*)
-- **nephatrine/alpine-s6:3.12**: Alpine 3.12 (*alpine:3.12*)
-- **nephatrine/alpine-s6:3.11**: Alpine 3.11 (*alpine:3.11*)
-- **nephatrine/alpine-s6:3.10**: Alpine 3.10 (*alpine:3.10*)
+- **nephatrine/alpine-s6:testing**: Alpine 3.13 (*Until UnRAID Works With Edge*)
+- **nephatrine/alpine-s6:latest**: Alpine 3.13
+- **nephatrine/alpine-s6:3.13**: Alpine 3.13
+- **nephatrine/alpine-s6:3.12**: Alpine 3.12
+- **nephatrine/alpine-s6:3.11**: Alpine 3.11
+- **nephatrine/alpine-s6:3.10**: Alpine 3.10
 
 ## Configuration Variables
 
