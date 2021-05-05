@@ -6,7 +6,6 @@ if [[ ! -d /etc/crontabs.default.d ]]; then
   if [[ -e /var/spool/cron/crontabs/root ]]; then
     cp /var/spool/cron/crontabs/root /etc/crontabs.default.d/root
   fi
-
   if [[ -e /var/spool/cron/crontabs/guardian ]]; then
     cp /var/spool/cron/crontabs/guardian /etc/crontabs.default.d/guardian
   fi
@@ -20,17 +19,14 @@ if [[ ! -e /mnt/config/etc/crontabs/root ]]; then
 
     echo '# NOTE: THIS IS THE ROOT CRONTAB - USE "s6-setuidgid guardian" TO ENSURE PROPER' | s6-setuidgid guardian tee /mnt/config/etc/crontabs/root >/dev/null
     echo '#       PERMISSIONS WHEN INTERACTING WITH MOUNTED VOLUMES.' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/root >/dev/null
-
     if [[ -e /etc/crontabs.default.d/root ]]; then
       echo '' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/root >/dev/null
       cat /etc/crontabs.default.d/root | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/root >/dev/null
     fi
-
     if [[ -e /etc/crontabs.custom.d/root ]]; then
       echo '' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/root >/dev/null
       cat /etc/crontabs.custom.d/root | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/root >/dev/null
     fi
-
     echo '' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/root >/dev/null
   fi
 fi
@@ -42,17 +38,14 @@ if [[ ! -e /mnt/config/etc/crontabs/guardian ]]; then
     fi
 
     echo '# NOTE: THIS IS THE VOLUME OWNER CRONTAB.' | s6-setuidgid guardian tee /mnt/config/etc/crontabs/guardian >/dev/null
-
     if [[ -e /etc/crontabs.default.d/guardian ]]; then
       echo '' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/guardian >/dev/null
       cat /etc/crontabs.default.d/guardian | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/guardian >/dev/null
     fi
-
     if [[ -e /etc/crontabs.custom.d/guardian ]]; then
       echo '' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/guardian >/dev/null
       cat /etc/crontabs.custom.d/guardian | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/guardian >/dev/null
     fi
-
     echo '' | s6-setuidgid guardian tee -a /mnt/config/etc/crontabs/guardian >/dev/null
   fi
 fi
