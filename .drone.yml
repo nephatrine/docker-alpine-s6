@@ -10,7 +10,7 @@ platform:
 steps:
 - name: build-3.13
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.13 . -f Dokerfile.313
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-s6:3.13 . -f Dockerfile.313
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/alpine-s6:3.13
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:3.13 nephatrine/alpine-s6:3.13
   - HOME=/mnt/config/home docker push nephatrine/alpine-s6:3.13
@@ -80,6 +80,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 2a34cdcc598b2f5ab1ab273b39412fb65fce12c5c9200a2976558fa0e802ee46
+hmac: a17218e9dec72401db7f432373093177a407d738f13ff12ebf1663902e9da93e
 
 ...
