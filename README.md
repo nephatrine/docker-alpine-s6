@@ -1,4 +1,4 @@
-[Git](https://code.nephatrine.net/nephatrine/docker-alpine-s6) |
+[Git](https://code.nephatrine.net/nephatrine/docker-alpine-s6/src/branch/testing) |
 [Docker](https://hub.docker.com/r/nephatrine/alpine-s6/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
@@ -17,13 +17,13 @@ to be used as a base for other docker images.
 You can spin up a quick temporary test container like this:
 
 ~~~
-docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
+docker run --rm -it nephatrine/alpine-s6:edge /bin/bash
 ~~~
 
 ## Docker Tags
 
-- **nephatrine/alpine-s6:testing**: Alpine 3.13 (*Until UnRAID Works With Edge*)
-- **nephatrine/alpine-s6:latest**: Alpine 3.13
+- **nephatrine/alpine-s6:edge**: Alpine Edge
+- **nephatrine/alpine-s6:latest**: Alpine Latest
 - **nephatrine/alpine-s6:3.13**: Alpine 3.13
 
 ## Configuration Variables
