@@ -24,7 +24,6 @@ docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
 
 - **nephatrine/alpine-s6:edge**: Alpine Edge
 - **nephatrine/alpine-s6:latest**: Alpine Latest
-- **nephatrine/alpine-s6:3.13**: Alpine 3.13
 
 ## Configuration Variables
 
