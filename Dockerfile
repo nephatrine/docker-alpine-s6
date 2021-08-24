@@ -8,6 +8,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
   ca-certificates coreutils \
   logrotate \
   openssl \
+  procps \
   shadow \
   tzdata \
  && rm -rf /var/cache/apk/*
