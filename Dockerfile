@@ -2,20 +2,20 @@ FROM alpine:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
- && apk --update upgrade \
- && apk add \
+ && apk --update upgrade --no-cache \
+ && apk add --no-cache \
   bash \
   ca-certificates coreutils \
   logrotate \
   openssl \
   shadow \
-  tzdata \
- && rm -rf /var/cache/apk/*
+  tzdata
 
 ARG S6_OVERLAY_VERSION=v3.0.0.2-2
 RUN echo "====== COMPILE S6-OVERLAY ======" \
  && mkdir /usr/src \
- && apk add --virtual .build-s6 build-base \
+ && apk add --no-cache --virtual .build-s6 \
+  build-base \
   git \
   linux-headers \
   make \
