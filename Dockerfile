@@ -31,7 +31,7 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
  && cd /usr/src/s6-overlay/output/symlinks-overlay-noarch && cp -Ran ./* / \
  && cd /usr/src/s6-overlay/output/syslogd-overlay-noarch && cp -Ran ./* / \
  && cd /usr/src && rm -rf /usr/src/* \
- && apk del --purge .build-s6 && rm -rf /var/cache/apk/*
+ && apk del --purge .build-s6
 
 ENV \
  HOME="/root" \
