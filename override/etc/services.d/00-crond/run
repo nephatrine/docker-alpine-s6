@@ -1,3 +1,0 @@
-#!/usr/bin/with-contenv sh
-/etc/periodic/15min/watcher-crond
-exec /usr/sbin/crond -L /mnt/config/log/crond.log -l 6 -f;

@@ -1,0 +1,19 @@
+#!/command/execlineb
+
+backtick PUID { /command/with-contenv /bin/bash -c "/bin/echo ${PUID:-1000}" }
+backtick PGID { /command/with-contenv /bin/bash -c "/bin/echo ${PGID:-100}" }
+importas puid PUID
+importas pgid PGID
+
+foreground { /usr/sbin/usermod -o -u "${puid}" guardian }
+foreground { /usr/sbin/groupmod -o -g "${pgid}" users }
+foreground { /bin/chown guardian:users /mnt/config }
+
+foreground {
+  if -n { /usr/bin/test -d /mnt/config/home }
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/home
+}
+foreground {
+  if { /usr/bin/test -d /etc/skel }
+  /command/s6-setuidgid guardian /bin/cp -Ran /etc/skel/. /mnt/config/home/
+}
