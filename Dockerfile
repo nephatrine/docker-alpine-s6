@@ -9,7 +9,8 @@ RUN echo "====== INSTALL PACKAGES ======" \
   logrotate \
   openssl \
   shadow \
-  tzdata
+  tzdata \
+ && rm -f /etc/logrotate.d/acpid
 
 ARG S6_OVERLAY_VERSION=v3.0.0.2-2
 RUN echo "====== COMPILE S6-OVERLAY ======" \
