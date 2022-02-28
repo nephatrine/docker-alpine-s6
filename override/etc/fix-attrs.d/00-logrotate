@@ -1,2 +1,0 @@
-/etc/logrotate.conf false root:root,0:0 0644 0755
-/etc/logrotate.d true root:root,0:0 0644 0755

@@ -1,7 +1,0 @@
-/mnt/config false guardian:users,1000:100 0644 0755
-/mnt/config/bin true guardian:users,1000:100 0755 0755
-/mnt/config/etc true guardian:users,1000:100 0644 0755
-/mnt/config/home true guardian:users,1000:100 0600 0700
-/mnt/config/log true guardian:users,1000:100 0644 0755
-/mnt/config/data false guardian:users,1000:100 0644 0755
-/mnt/config/www false guardian:users,1000:100 0644 0755
