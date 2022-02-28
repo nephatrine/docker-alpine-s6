@@ -1,0 +1,8 @@
+#!/command/execlineb
+
+backtick TZ { /command/with-contenv /bin/bash -c "/bin/echo ${TZ:-"America/New_York"}" }
+importas tz TZ
+
+if { /usr/bin/test -f "/usr/share/zoneinfo/${tz}" }
+foreground { /bin/ln -snf "/usr/share/zoneinfo/${tz}" /etc/localtime }
+foreground { redirfd -w 1 /etc/timezone /bin/echo "${tz}" }
