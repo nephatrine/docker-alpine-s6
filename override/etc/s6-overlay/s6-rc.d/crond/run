@@ -24,18 +24,18 @@ if [[ ! -f "${THISTAB}" ]]; then
       /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/crontabs
     fi
     
-    /bin/echo '# NOTE: THIS IS THE ROOT CRONTAB - USE "s6-setuidgid guardian" TO ENSURE PROPER' | /command/s6-setuidgid guardian /usr/bin/tee "${THISTAB}" >/dev/null
-    /bin/echo '#       PERMISSIONS WHEN INTERACTING WITH MOUNTED VOLUME.' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+    echo '# NOTE: THIS IS THE ROOT CRONTAB - USE "s6-setuidgid guardian" TO ENSURE PROPER' | /command/s6-setuidgid guardian /usr/bin/tee "${THISTAB}" >/dev/null
+    echo '#       PERMISSIONS WHEN INTERACTING WITH MOUNTED VOLUME.' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     
     if [[ -f /etc/crontabs.default.d/root ]]; then
-      /bin/echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+      echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.default.d/root | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
     if [[ -f /etc/crontabs.custom.d/root ]]; then
-      /bin/echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+      echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.custom.d/root | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
-    /bin/echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+    echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     /bin/chmod 600 "${THISTAB}"
   fi
 fi
@@ -49,17 +49,17 @@ if [[ ! -f "${THISTAB}" ]]; then
       /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/crontabs
     fi
     
-    /bin/echo '# NOTE: THIS IS THE VOLUME OWNER CRONTAB.' | /command/s6-setuidgid guardian /usr/bin/tee "${THISTAB}" >/dev/null
+    echo '# NOTE: THIS IS THE VOLUME OWNER CRONTAB.' | /command/s6-setuidgid guardian /usr/bin/tee "${THISTAB}" >/dev/null
     
     if [[ -f /etc/crontabs.default.d/guardian ]]; then
-      /bin/echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+      echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.default.d/guardian | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
     if [[ -f /etc/crontabs.custom.d/guardian ]]; then
-      /bin/echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+      echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.custom.d/guardian | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
-    /bin/echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
+    echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     /bin/chmod 600 "${THISTAB}"
   fi
 fi

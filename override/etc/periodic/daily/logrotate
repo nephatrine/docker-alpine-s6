@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv /bin/bash
+#!/command/with-contenv /bin/bash
 
 EXITVALUE=0
 
@@ -10,7 +10,7 @@ if [[ -f /mnt/config/etc/logrotate.conf ]]; then
   cd /mnt/config/log
   /usr/bin/test -e logrotate.status || /command/s6-setuidgid guardian /bin/touch logrotate.status
   /usr/bin/head -1 logrotate.status | /command/s6-setuidgid guardian /usr/bin/tee logrotate.clean
-  sed 's/"//g' logrotate.status | while read logfile date; do
+  /bin/sed 's/"//g' logrotate.status | while read logfile date; do
     [ -e "$logfile" ] && echo "\"$logfile\" $date"
   done | /command/s6-setuidgid guardian /usr/bin/tee -a logrotate.clean
   /command/s6-setuidgid guardian /bin/mv logrotate.clean logrotate.status

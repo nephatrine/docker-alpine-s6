@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv sh
+#!/command/with-contenv /bin/bash
 
 if [ -f /mnt/config/etc/crontabs/root ]; then
   if ! /usr/bin/diff /etc/crontabs/root /mnt/config/etc/crontabs/root >/dev/null 2>&1; then
