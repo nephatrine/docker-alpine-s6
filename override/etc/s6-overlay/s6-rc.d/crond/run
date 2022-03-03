@@ -6,6 +6,12 @@ if [[ ! -d /mnt/config/log ]]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
 fi
 
+if [[ -f /mnt/config/log/crond.log ]]; then
+  chown guardian:users /mnt/config/log/crond.log
+else
+  /command/s6-setuidgid guardian /bin/touch /mnt/config/log/crond.log
+fi
+
 # Store Backup Crontabs
 
 if [[ ! -d /etc/crontabs.default.d ]]; then
