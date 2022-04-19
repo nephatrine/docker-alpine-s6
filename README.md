@@ -22,7 +22,6 @@ docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
 
 ## Docker Tags
 
-- **nephatrine/alpine-s6:edge**: Alpine Edge
 - **nephatrine/alpine-s6:latest**: Alpine Latest
 
 ## Configuration Variables
