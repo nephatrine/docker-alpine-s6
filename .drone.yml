@@ -1,101 +1,7 @@
 ---
 kind: pipeline
-name: build
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: build-builder
-  image: plugins/docker
-  settings:
-    custom_dns: 192.168.20.1
-    registry: pdr.nephatrine.net
-    repo: pdr.nephatrine.net/nephatrine/alpine-s6
-    cache_from:
-    - "pdr.nephatrine.net/nephatrine/alpine-s6:latest-build"
-    pull_image: true
-    dockerfile: Dockerfile.builder
-    tags:
-    - latest-build
-    username:
-      from_secret: docker-user-pdr
-    password:
-      from_secret: docker-pass-pdr
-  when:
-    event:
-      exclude:
-      - pull_request
-- name: build-stage1
-  image: plugins/docker
-  settings:
-    custom_dns: 192.168.20.1
-    registry: pdr.nephatrine.net
-    repo: pdr.nephatrine.net/nephatrine/alpine-s6
-    cache_from:
-    - "pdr.nephatrine.net/nephatrine/alpine-s6:latest-stage1"
-    pull_image: true
-    target: builder
-    tags:
-    - latest-stage1
-    username:
-      from_secret: docker-user-pdr
-    password:
-      from_secret: docker-pass-pdr
-  depends_on:
-  - build-builder
-  when:
-    event:
-      exclude:
-      - pull_request
-- name: build-stage2
-  image: plugins/docker
-  settings:
-    custom_dns: 192.168.20.1
-    registry: pdr.nephatrine.net
-    repo: pdr.nephatrine.net/nephatrine/alpine-s6
-    cache_from:
-    - "pdr.nephatrine.net/nephatrine/alpine-s6:latest-stage1"
-    - "pdr.nephatrine.net/nephatrine/alpine-s6:latest"
-    pull_image: true
-    tags:
-    - latest
-    username:
-      from_secret: docker-user-pdr
-    password:
-      from_secret: docker-pass-pdr
-  depends_on:
-  - build-stage1
-  when:
-    event:
-      exclude:
-      - pull_request
-- name: build-prt
-  image: plugins/docker
-  settings:
-    custom_dns: 192.168.20.1
-    registry: pdr.nephatrine.net
-    repo: pdr.nephatrine.net/nephatrine/alpine-s6
-    cache_from:
-    - "pdr.nephatrine.net/nephatrine/alpine-s6:latest-stage1"
-    - "pdr.nephatrine.net/nephatrine/alpine-s6:latest"
-    pull_image: true
-    dry_run: true
-    tags:
-    - prt
-    username:
-      from_secret: docker-user-pdr
-    password:
-      from_secret: docker-pass-pdr
-  when:
-    event:
-    - pull_request
-
----
-kind: pipeline
 type: exec
-name: publish
+name: build
 
 platform:
   os: linux
@@ -113,8 +19,11 @@ steps:
     PDR_PASS:
       from_secret: docker-pass-pdr
   commands:
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-builder:latest . -f Dockerfile.builder
+  - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest .
   - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
-  - docker pull pdr.nephatrine.net/nephatrine/alpine-s6:latest
+  - docker push pdr.nephatrine.net/nephatrine/alpine-builder:latest
+  - docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - docker logout pdr.nephatrine.net
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
@@ -124,9 +33,6 @@ steps:
     event:
       exclude:
       - pull_request
-
-depends_on:
-- build
 
 ---
 kind: pipeline
@@ -144,9 +50,13 @@ steps:
       from_secret: wh-infra-id
     webhook_token:
       from_secret: wh-infra-tok
+  when:
+    event:
+      exclude:
+      - pull_request
 
 depends_on:
-- publish
+- build
 
 trigger:
   status:
@@ -178,7 +88,7 @@ steps:
       - pull_request
 
 depends_on:
-- publish
+- build
 
 ---
 kind: signature

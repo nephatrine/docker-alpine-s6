@@ -1,4 +1,4 @@
-FROM pdr.nephatrine.net/nephatrine/alpine-s6:latest-build AS builder
+FROM pdr.nephatrine.net/nephatrine/alpine-builder:latest AS builder
 
 ARG S6_OVERLAY_VERSION=v3.0.0.2-2
 RUN git -C /usr/src clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
