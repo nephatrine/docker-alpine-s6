@@ -1,14 +1,14 @@
 ---
 kind: pipeline
 type: exec
-name: build
+name: default
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-- name: construct
+- name: build
   environment:
     PDR_USER:
       from_secret: docker-user-pdr
@@ -33,6 +33,8 @@ steps:
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
   - docker push nephatrine/alpine-s6:latest
   - docker logout
+  depends_on:
+  - build
 
 ---
 kind: pipeline
@@ -52,7 +54,7 @@ steps:
       from_secret: wh-infra-tok
 
 depends_on:
-- build
+- default
 
 trigger:
   status:
@@ -73,17 +75,17 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
-      - nephatrine/docker-drone-ci@master
-      - nephatrine/docker-gitea-web@master
-      - nephatrine/docker-minecraft-mcu@master
-      - nephatrine/docker-nginx-ssl@master
-      - nephatrine/docker-registry@master
+    - nephatrine/docker-drone-ci@master
+    - nephatrine/docker-gitea-web@master
+    - nephatrine/docker-minecraft-mcu@master
+    - nephatrine/docker-nginx-ssl@master
+    - nephatrine/docker-registry@master
 
 depends_on:
-- build
+- default
 
 ---
 kind: signature
-hmac: 74009d82741f8c4ec6d16ac4154d7378fb42ce23def0f5828293f22f4c3f1206
+hmac: 1edafd02fac41ab795744e1e583ee69cf0edc0ad04a515cef82c1c452840f5ca
 
 ...
