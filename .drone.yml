@@ -8,12 +8,8 @@ platform:
   arch: amd64
 
 steps:
-- name: publish-release
+- name: construct
   environment:
-    DOCKER_USER:
-      from_secret: docker-user
-    DOCKER_PASS:
-      from_secret: docker-pass
     PDR_USER:
       from_secret: docker-user-pdr
     PDR_PASS:
@@ -25,14 +21,17 @@ steps:
   - docker push pdr.nephatrine.net/nephatrine/alpine-builder:latest
   - docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - docker logout pdr.nephatrine.net
+- name: publish
+  environment:
+    DOCKER_USER:
+      from_secret: docker-user
+    DOCKER_PASS:
+      from_secret: docker-pass
+  commands:
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
   - docker push nephatrine/alpine-s6:latest
   - docker logout
-  when:
-    event:
-      exclude:
-      - pull_request
 
 ---
 kind: pipeline
@@ -50,10 +49,6 @@ steps:
       from_secret: wh-infra-id
     webhook_token:
       from_secret: wh-infra-tok
-  when:
-    event:
-      exclude:
-      - pull_request
 
 depends_on:
 - build
@@ -82,16 +77,12 @@ steps:
       - nephatrine/docker-minecraft-mcu@master
       - nephatrine/docker-nginx-ssl@master
       - nephatrine/docker-registry@master
-  when:
-    event:
-      exclude:
-      - pull_request
 
 depends_on:
 - build
 
 ---
 kind: signature
-hmac: 0983b70e90c71e4258f90389e514de7b7150b397887f25fc0ed43cbe5b65f9c9
+hmac: 93de79afe9fca0813acdff689c6bab2b980e397de32613ea38eef933692b887a
 
 ...
