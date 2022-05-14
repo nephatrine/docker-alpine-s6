@@ -15,11 +15,9 @@ steps:
     PDR_PASS:
       from_secret: docker-pass-pdr
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/alpine-builder:latest . -f Dockerfile.builder
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:cached --target builder .
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest .
   - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
-  - docker push pdr.nephatrine.net/nephatrine/alpine-builder:latest
   - docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
   - docker logout pdr.nephatrine.net
 - name: publish
@@ -86,6 +84,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 1edafd02fac41ab795744e1e583ee69cf0edc0ad04a515cef82c1c452840f5ca
+hmac: 9e072076b8a95e1d0335c9d93e56445930df51550027d3eb2869a12c70311f25
 
 ...
