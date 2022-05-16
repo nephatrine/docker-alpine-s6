@@ -29,7 +29,7 @@ steps:
   commands:
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
-  - docker push nephatrine/alpine-s6:latest
+  - docker push -a nephatrine/alpine-s6
   - docker logout
   depends_on:
   - build
@@ -84,6 +84,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 9e072076b8a95e1d0335c9d93e56445930df51550027d3eb2869a12c70311f25
+hmac: 47b03df7851cdf4f8f0a8d36ac8c236db2501e0931f956e76ec3c38a2b6ffe71
 
 ...
