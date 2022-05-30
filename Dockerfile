@@ -1,10 +1,10 @@
-FROM nephatrine/alpine:builder AS builder
+FROM nephatrine/nxbuilder:alpine AS builder
 
 ARG S6_OVERLAY_VERSION=v3.0.0.2-2
-RUN git -C /usr/src clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
+RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
 
 RUN echo "====== COMPILE S6-OVERLAY ======" \
- && cd /usr/src/s6-overlay \
+ && cd /root/s6-overlay \
  && make rootfs-overlay-arch rootfs-overlay-noarch \
  && make symlinks-overlay-arch symlinks-overlay-noarch \
  && make syslogd-overlay-noarch
@@ -34,11 +34,11 @@ ENV \
  PATH=/usr/local/sbin:/usr/local/bin:/command:/usr/sbin:/usr/bin:/sbin:/bin
  
 COPY --from=builder \
- /usr/src/s6-overlay/output/rootfs-overlay-x86_64-linux-musl/ \
- /usr/src/s6-overlay/output/rootfs-overlay-noarch/ \
- /usr/src/s6-overlay/output/symlinks-overlay-arch/ \
- /usr/src/s6-overlay/output/symlinks-overlay-noarch/ \
- /usr/src/s6-overlay/output/syslogd-overlay-noarch/ /
+ /root/s6-overlay/output/rootfs-overlay-x86_64-linux-musl/ \
+ /root/s6-overlay/output/rootfs-overlay-noarch/ \
+ /root/s6-overlay/output/symlinks-overlay-arch/ \
+ /root/s6-overlay/output/symlinks-overlay-noarch/ \
+ /root/s6-overlay/output/syslogd-overlay-noarch/ /
 COPY override /
 
 ENTRYPOINT ["/init"]
