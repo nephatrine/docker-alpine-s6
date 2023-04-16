@@ -1,6 +1,6 @@
 FROM nephatrine/nxbuilder:alpine AS builder
 
-ARG S6_OVERLAY_VERSION=v3.0.0.2-2
+ARG S6_OVERLAY_VERSION=v3.1.4.2
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
 
 RUN echo "====== COMPILE S6-OVERLAY ======" \
