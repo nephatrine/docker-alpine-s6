@@ -28,6 +28,10 @@ steps:
       from_secret: docker-pass
   commands:
   - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3.1.4.2
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3.1.4
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3.1
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
   - docker push -a nephatrine/alpine-s6
   - docker logout
@@ -73,6 +77,7 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
+    - NephNET/docker-gitea-act@master
     - nephatrine/docker-drone-ci@master
     - nephatrine/docker-gitea-web@master
     - nephatrine/docker-minecraft-mcu@master
@@ -84,6 +89,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 47b03df7851cdf4f8f0a8d36ac8c236db2501e0931f956e76ec3c38a2b6ffe71
+hmac: 3fbe7680383a87561d384f039a3477b47922fb04b231f063a18983ca11b9aa13
 
 ...
