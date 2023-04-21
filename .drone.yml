@@ -18,7 +18,7 @@ steps:
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:cached --target builder .
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest-amd64 .
   - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
-  - docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest-amd64
+  - docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest-amd64
   - docker logout pdr.nephatrine.net
   - sleep 10
 
@@ -42,7 +42,7 @@ steps:
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:cached --target builder .
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest-arm64v8 .
   - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
-  - docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest-arm64v8
+  - docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest-arm64v8
   - docker logout pdr.nephatrine.net
   - sleep 10
 
@@ -148,6 +148,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 30ec8ef4279461bc592c7a651239f537a39cfdcfee4cbe3966c9c33ea7af7c78
+hmac: 910c446647fc7af097688b3ff7df808119b21f1bbd3a5ef59e2c9b81c5e6a77a
 
 ...
