@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: exec
-name: default
+name: buildamd64
 
 platform:
   os: linux
@@ -16,9 +16,57 @@ steps:
       from_secret: docker-pass-pdr
   commands:
   - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:cached --target builder .
-  - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest .
+  - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest-amd64 .
   - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
-  - docker push pdr.nephatrine.net/nephatrine/alpine-s6:latest
+  - docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest-amd64
+  - docker logout pdr.nephatrine.net
+  - sleep 10
+
+---
+kind: pipeline
+type: exec
+name: buildarm64
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: build
+  environment:
+    PDR_USER:
+      from_secret: docker-user-pdr
+    PDR_PASS:
+      from_secret: docker-pass-pdr
+  commands:
+  - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:cached --target builder .
+  - docker build -t pdr.nephatrine.net/nephatrine/alpine-s6:latest-arm64v8 .
+  - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
+  - docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest-arm64v8
+  - docker logout pdr.nephatrine.net
+  - sleep 10
+
+---
+kind: pipeline
+type: exec
+name: manifest
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: pull
+  environment:
+    PDR_USER:
+      from_secret: docker-user-pdr
+    PDR_PASS:
+      from_secret: docker-pass-pdr
+  commands:
+  - sleep 10
+  - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
+  - docker pull pdr.nephatrine.net/nephatrine/alpine-s6:latest-amd64
+  - docker pull pdr.nephatrine.net/nephatrine/alpine-s6:latest-arm64v8
   - docker logout pdr.nephatrine.net
 - name: publish
   environment:
@@ -27,16 +75,28 @@ steps:
     DOCKER_PASS:
       from_secret: docker-pass
   commands:
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:latest
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3.1.4.2
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3.1.4
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3.1
-  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest nephatrine/alpine-s6:3
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest-amd64 nephatrine/alpine-s6:latest-amd64
+  - docker tag pdr.nephatrine.net/nephatrine/alpine-s6:latest-arm64v8 nephatrine/alpine-s6:latest-arm64v8
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
-  - docker push -a nephatrine/alpine-s6
+  - docker push nephatrine/alpine-s6:latest-amd64
+  - docker push nephatrine/alpine-s6:latest-arm64v8
+  - docker manifest create nephatrine/alpine-s6:latest --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-arm64v8
+  - docker manifest create nephatrine/alpine-s6:3.1.4.2 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-arm64v8
+  - docker manifest create nephatrine/alpine-s6:3.1.4 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-arm64v8
+  - docker manifest create nephatrine/alpine-s6:3.1 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-arm64v8
+  - docker manifest create nephatrine/alpine-s6:3 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-arm64v8
+  - docker manifest push --purge nephatrine/alpine-s6:latest
+  - docker manifest push --purge nephatrine/alpine-s6:3.1.4.2
+  - docker manifest push --purge nephatrine/alpine-s6:3.1.4
+  - docker manifest push --purge nephatrine/alpine-s6:3.1
+  - docker manifest push --purge nephatrine/alpine-s6:3
   - docker logout
   depends_on:
-  - build
+  - pull
+
+depends_on:
+- buildamd64
+- buildarm64
 
 ---
 kind: pipeline
@@ -56,7 +116,7 @@ steps:
       from_secret: wh-infra-tok
 
 depends_on:
-- default
+- manifest
 
 trigger:
   status:
@@ -77,7 +137,6 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
-    - NephNET/docker-gitea-act@master
     - nephatrine/docker-drone-ci@master
     - nephatrine/docker-gitea-web@master
     - nephatrine/docker-minecraft-mcu@master
@@ -85,10 +144,10 @@ steps:
     - nephatrine/docker-registry@master
 
 depends_on:
-- default
+- manifest
 
 ---
 kind: signature
-hmac: 3fbe7680383a87561d384f039a3477b47922fb04b231f063a18983ca11b9aa13
+hmac: 30ec8ef4279461bc592c7a651239f537a39cfdcfee4cbe3966c9c33ea7af7c78
 
 ...
