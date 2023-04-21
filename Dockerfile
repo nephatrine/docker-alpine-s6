@@ -4,10 +4,18 @@ ARG S6_OVERLAY_VERSION=v3.1.4.2
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
 
 RUN echo "====== COMPILE S6-OVERLAY ======" \
+ && ln -s ar /usr/bin/$(uname -m)-alpine-linux-musl-ar \
+ && ln -s ranlib /usr/bin/$(uname -m)-alpine-linux-musl-ranlib \
+ && ln -s strip /usr/bin/$(uname -m)-alpine-linux-musl-strip \
  && cd /root/s6-overlay \
- && make rootfs-overlay-arch rootfs-overlay-noarch \
- && make symlinks-overlay-arch symlinks-overlay-noarch \
- && make syslogd-overlay-noarch
+ && sed -i 's~=$(TOOLCHAIN_PATH)/bin/$(ARCH)-~=/usr/bin/$(ARCH)-~g' mk/bearssl.mk \
+ && sed -i 's~ $(TOOLCHAIN_PATH)/bin/$(ARCH)-gcc~~g' mk/skaware.mk mk/bearssl.mk \
+ && sed -i 's~ $(TOOLCHAIN_PATH)/bin:~~g' mk/skaware.mk mk/bearssl.mk \
+ && sed -i 's~include mk/toolchain.mk~~g' Makefile \
+ && make ARCH=$(uname -m)-alpine-linux-musl rootfs-overlay-arch rootfs-overlay-noarch \
+ && make ARCH=$(uname -m)-alpine-linux-musl symlinks-overlay-arch symlinks-overlay-noarch \
+ && make syslogd-overlay-noarch \
+ && mv /root/s6-overlay/output/rootfs-overlay-$(uname -m)-alpine-linux-musl /root/s6-overlay/output/rootfs-overlay-arch
 
 FROM alpine:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
@@ -29,7 +37,7 @@ ENV \
  PATH=/usr/local/sbin:/usr/local/bin:/command:/usr/sbin:/usr/bin:/sbin:/bin
  
 COPY --from=builder \
- /root/s6-overlay/output/rootfs-overlay-x86_64-linux-musl/ \
+ /root/s6-overlay/output/rootfs-overlay-arch/ \
  /root/s6-overlay/output/rootfs-overlay-noarch/ \
  /root/s6-overlay/output/symlinks-overlay-arch/ \
  /root/s6-overlay/output/symlinks-overlay-noarch/ \
