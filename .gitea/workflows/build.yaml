@@ -146,6 +146,6 @@ jobs:
         uses: actions/discord-status@v1
         with:
           title: "DockerHub: alpine-s6"
-          description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/alpine-s6/general). Pull `nephatrine/alpine-s6:latest` for the newest image."
+          description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/alpine-s6/general).\nPull `nephatrine/alpine-s6:latest` for the newest image."
           nodetail: true
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
