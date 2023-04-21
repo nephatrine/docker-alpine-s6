@@ -1,8 +1,6 @@
-[Git](https://code.nephatrine.net/nephatrine/docker-alpine-s6/src/branch/master) |
+[Git](https://code.nephatrine.net/NephNET/docker-alpine-s6/src/branch/master) |
 [Docker](https://hub.docker.com/r/nephatrine/alpine-s6/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
-
-[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-alpine-s6/status.svg?ref=refs/heads/master)](https://ci.nephatrine.net/nephatrine/docker-alpine-s6)
 
 # Alpine, S6, & S6-Overlay (Base)
 
@@ -10,9 +8,7 @@ This docker base image contains Alpine Linux with the Skarnet S6 supervisor,
 and the S6 overlay installed. It has no function on its own and is intended
 to be used as a base for other docker images.
 
-- [Alpine Linux](https://alpinelinux.org/)
-- [Skarnet Software](https://skarnet.org/software/)
-- [S6 Overlay](https://github.com/just-containers/s6-overlay)
+- [Alpine Linux](https://alpinelinux.org/) w/ [S6 Overlay](https://github.com/just-containers/s6-overlay)
 
 You can spin up a quick temporary test container like this:
 
@@ -22,7 +18,7 @@ docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
 
 ## Docker Tags
 
-- **nephatrine/alpine-s6:latest**: Alpine Latest
+- **nephatrine/alpine-s6:latest**: S6-Overlay v3.1.4.2 / Alpine Latest
 
 ## Configuration Variables
 
