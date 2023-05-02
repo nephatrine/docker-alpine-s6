@@ -4,18 +4,20 @@ ARG S6_OVERLAY_VERSION=v3.1.4.2
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
 
 RUN echo "====== COMPILE S6-OVERLAY ======" \
- && ln -s ar /usr/bin/$(uname -m)-alpine-linux-musl-ar \
- && ln -s ranlib /usr/bin/$(uname -m)-alpine-linux-musl-ranlib \
- && ln -s strip /usr/bin/$(uname -m)-alpine-linux-musl-strip \
+ && export ARCH_TRIPLET="$(uname -m)-alpine-linux-musl" \
+ && if [ "$(uname -m)" = "armv7l" ]; then export ARCH_TRIPLET="armv7-alpine-linux-musleabihf"; fi \
+ && ln -s ar /usr/bin/${ARCH_TRIPLET}-ar \
+ && ln -s ranlib /usr/bin/${ARCH_TRIPLET}-ranlib \
+ && ln -s strip /usr/bin/${ARCH_TRIPLET}-strip \
  && cd /root/s6-overlay \
  && sed -i 's~=$(TOOLCHAIN_PATH)/bin/$(ARCH)-~=/usr/bin/$(ARCH)-~g' mk/bearssl.mk \
  && sed -i 's~ $(TOOLCHAIN_PATH)/bin/$(ARCH)-gcc~~g' mk/skaware.mk mk/bearssl.mk \
  && sed -i 's~ $(TOOLCHAIN_PATH)/bin:~~g' mk/skaware.mk mk/bearssl.mk \
  && sed -i 's~include mk/toolchain.mk~~g' Makefile \
- && make ARCH=$(uname -m)-alpine-linux-musl rootfs-overlay-arch rootfs-overlay-noarch \
- && make ARCH=$(uname -m)-alpine-linux-musl symlinks-overlay-arch symlinks-overlay-noarch \
+ && make ARCH=${ARCH_TRIPLET} rootfs-overlay-arch rootfs-overlay-noarch \
+ && make ARCH=${ARCH_TRIPLET} symlinks-overlay-arch symlinks-overlay-noarch \
  && make syslogd-overlay-noarch \
- && mv /root/s6-overlay/output/rootfs-overlay-$(uname -m)-alpine-linux-musl /root/s6-overlay/output/rootfs-overlay-arch
+ && mv /root/s6-overlay/output/rootfs-overlay-${ARCH_TRIPLET} /root/s6-overlay/output/rootfs-overlay-arch
 
 FROM alpine:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
