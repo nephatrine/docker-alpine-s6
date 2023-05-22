@@ -18,7 +18,7 @@ docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
 
 ## Docker Tags
 
-- **nephatrine/alpine-s6:latest**: S6-Overlay v3.1.4.2 / Alpine Latest
+- **nephatrine/alpine-s6:latest**: S6-Overlay v3.1.5.0 / Alpine Latest
 
 ## Configuration Variables
 
