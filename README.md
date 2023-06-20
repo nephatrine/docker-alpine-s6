@@ -2,53 +2,37 @@
 [Docker](https://hub.docker.com/r/nephatrine/alpine-s6/) |
 [unRAID](https://code.nephatrine.net/NephNET/unraid-containers)
 
-# Alpine, S6, & S6-Overlay (Base)
+# Alpine S6-Overlay Base Image
 
 This docker base image contains Alpine Linux with the Skarnet S6 supervisor,
 and the S6 overlay installed. It has no function on its own and is intended
 to be used as a base for other docker images.
 
-- [Alpine Linux](https://alpinelinux.org/) w/ [S6 Overlay](https://github.com/just-containers/s6-overlay)
+The `latest` tag points to `alpine:latest` and s6-overlay `3.1.5.0`. This is
+the only image actively being updated. There are tags for older versions, but
+these may no longer be using the latest Alpine version and packages.
 
-You can spin up a quick temporary test container like this:
+## Docker-Compose
 
-~~~
-docker run --rm -it nephatrine/alpine-s6:latest /bin/bash
-~~~
+This is an example docker-compose file:
 
-## Docker Tags
+```yaml
+services:
+  alpine:
+    image: nephatrine/alpine-s6:latest
+    container_name: act_runner
+    environment:
+      TZ: America/New_York
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - /mnt/containers/alpine:/mnt/config
+```
 
-- **nephatrine/alpine-s6:latest**: S6-Overlay v3.1.5.0 / Alpine Latest
+## Basic Gist
 
-## Configuration Variables
-
-You can set these parameters using the syntax ``-e "VARNAME=VALUE"`` on your
-``docker run`` command. Some of these may only be used during initial
-configuration and further changes may need to be made in the generated
-configuration files.
-
-- ``PUID``: Mount Owner UID (*1000*)
-- ``PGID``: Mount Owner GID (*100*)
-- ``TZ``: System Timezone (*America/New_York*)
-
-## Persistent Mounts
-
-You can provide a persistent mountpoint using the ``-v /host/path:/container/path``
-syntax. These mountpoints are intended to house important configuration files,
-logs, and application state (e.g. databases) so they are not lost on image
-update.
-
-- ``/mnt/config``: Persistent Data.
-
-Do not share ``/mnt/config`` volumes between multiple containers as they may
-interfere with the operation of one another.
-
-You can perform some basic configuration of the container using the files and
-directories listed below.
-
-- ``/mnt/config/etc/crontabs/<user>``: User Crontabs. [*]
-- ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
-- ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
-
-**[*] Changes to some configuration files may require service restart to take
-immediate effect.**
+This base image creates slightly chunkier base images. The images are still
+really small and performant, but include some niceties that other containers
+don't bother including like cron, logrotate, and bash. It also includes a
+non-root userid which can be mapped to a userid outside the container for the
+purposes of keeping permissions sane on the mounted data volume.

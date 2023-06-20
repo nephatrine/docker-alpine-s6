@@ -1,0 +1,10 @@
+services:
+  act_runner:
+    build: .
+    container_name: alpine
+    environment:
+      TZ: America/New_York
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - /mnt/containers/alpine:/mnt/config
