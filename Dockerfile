@@ -15,8 +15,8 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
  && sed -i 's~ $(TOOLCHAIN_PATH)/bin:~~g' mk/skaware.mk mk/bearssl.mk \
  && sed -i 's~include mk/toolchain.mk~~g' Makefile \
  && make ARCH=${ARCH_TRIPLET} rootfs-overlay-arch rootfs-overlay-noarch \
- && make ARCH=${ARCH_TRIPLET} symlinks-overlay-arch symlinks-overlay-noarch \
- && make syslogd-overlay-noarch \
+ && make ARCH=${ARCH_TRIPLET} -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) symlinks-overlay-arch symlinks-overlay-noarch \
+ && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) syslogd-overlay-noarch \
  && mv /root/s6-overlay/output/rootfs-overlay-${ARCH_TRIPLET} /root/s6-overlay/output/rootfs-overlay-arch
 
 FROM alpine:latest

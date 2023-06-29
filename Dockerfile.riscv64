@@ -13,8 +13,8 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
  && sed -i 's~ $(TOOLCHAIN_PATH)/bin:~~g' mk/skaware.mk mk/bearssl.mk \
  && sed -i 's~include mk/toolchain.mk~~g' Makefile \
  && make ARCH=$(uname -m)-alpine-linux-musl rootfs-overlay-arch rootfs-overlay-noarch \
- && make ARCH=$(uname -m)-alpine-linux-musl symlinks-overlay-arch symlinks-overlay-noarch \
- && make syslogd-overlay-noarch \
+ && make ARCH=$(uname -m)-alpine-linux-musl -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) symlinks-overlay-arch symlinks-overlay-noarch \
+ && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) syslogd-overlay-noarch \
  && mv /root/s6-overlay/output/rootfs-overlay-$(uname -m)-alpine-linux-musl /root/s6-overlay/output/rootfs-overlay-arch
 
 FROM riscv64/alpine:edge
