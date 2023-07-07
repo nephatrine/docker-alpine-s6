@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 # Make Log Directory
 
-if [[ -f /mnt/config/log/crond.log ]]; then
+if [ -f /mnt/config/log/crond.log ]; then
   /bin/chown guardian:users /mnt/config/log/crond.log
 else
-  if [[ ! -d /mnt/config/log ]]; then
+  if [ ! -d /mnt/config/log ]; then
     /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
   fi
   /command/s6-setuidgid guardian /bin/touch /mnt/config/log/crond.log
@@ -13,30 +13,32 @@ fi
 
 # Store Backup Crontabs
 
-if [[ ! -d /etc/crontabs.default.d ]]; then
+if [ ! -d /etc/crontabs.default.d ]; then
   /bin/mkdir -p /etc/crontabs.default.d
-  if [[ -d /var/spool/cron/crontabs ]]; then
+  if [ -d /var/spool/cron/crontabs ]; then
     /bin/cp -a /var/spool/cron/crontabs/* /etc/crontabs.default.d/
   fi
 fi
 
+# Create Crontabs Location
+
+if [ ! -d /mnt/config/etc/crontabs ]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/crontabs
+fi
+
 # Build Root Crontab
 
-THISTAB="/mnt/config/etc/crontabs/root"
-if [[ ! -f "${THISTAB}" ]]; then
-  if [[ -f /etc/crontabs.default.d/root || -f /etc/crontabs.custom.d/root ]]; then
-    if [[ ! -d /mnt/config/etc/crontabs ]]; then
-      /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/crontabs
-    fi
-    
+export THISTAB="/mnt/config/etc/crontabs/root"
+
+if [ ! -f "${THISTAB}" ] && [ -d /mnt/config/etc/crontabs ]; then
+  if [ -f /etc/crontabs.default.d/root ] || [ -f /etc/crontabs.custom.d/root ]; then
     echo '# NOTE: THIS IS THE ROOT CRONTAB - USE "s6-setuidgid guardian" TO ENSURE PROPER' | /command/s6-setuidgid guardian /usr/bin/tee "${THISTAB}" >/dev/null
     echo '#       PERMISSIONS WHEN INTERACTING WITH MOUNTED VOLUME.' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
-    
-    if [[ -f /etc/crontabs.default.d/root ]]; then
+    if [ -f /etc/crontabs.default.d/root ]; then
       echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.default.d/root | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
-    if [[ -f /etc/crontabs.custom.d/root ]]; then
+    if [ -f /etc/crontabs.custom.d/root ]; then
       echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.custom.d/root | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
@@ -47,20 +49,16 @@ fi
 
 # Build Guardian Crontab
 
-THISTAB="/mnt/config/etc/crontabs/guardian"
-if [[ ! -f "${THISTAB}" ]]; then
-  if [[ -f /etc/crontabs.default.d/guardian || -f /etc/crontabs.custom.d/guardian ]]; then
-    if [[ ! -d /mnt/config/etc/crontabs ]]; then
-      /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/crontabs
-    fi
-    
+export THISTAB="/mnt/config/etc/crontabs/guardian"
+
+if [ ! -f "${THISTAB}" ] && [ -d /mnt/config/etc/crontabs ]; then
+  if [ -f /etc/crontabs.default.d/guardian ] || [ -f /etc/crontabs.custom.d/guardian ]; then
     echo '# NOTE: THIS IS THE VOLUME OWNER CRONTAB.' | /command/s6-setuidgid guardian /usr/bin/tee "${THISTAB}" >/dev/null
-    
-    if [[ -f /etc/crontabs.default.d/guardian ]]; then
+    if [ -f /etc/crontabs.default.d/guardian ]; then
       echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.default.d/guardian | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
-    if [[ -f /etc/crontabs.custom.d/guardian ]]; then
+    if [ -f /etc/crontabs.custom.d/guardian ]; then
       echo '' | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
       /bin/cat /etc/crontabs.custom.d/guardian | /command/s6-setuidgid guardian /usr/bin/tee -a "${THISTAB}" >/dev/null
     fi
@@ -68,6 +66,8 @@ if [[ ! -f "${THISTAB}" ]]; then
     /bin/chmod 600 "${THISTAB}"
   fi
 fi
+
+# Launch Cron
 
 /etc/periodic/15min/watcher-crond
 exec /usr/sbin/crond -L /mnt/config/log/crond.log -l 6 -f;

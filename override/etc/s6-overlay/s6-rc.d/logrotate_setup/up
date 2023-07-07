@@ -4,11 +4,8 @@ foreground {
   if -n { /usr/bin/test -d /mnt/config/etc/logrotate.d }
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/logrotate.d
 }
-
 foreground {
   if -n { /usr/bin/test -f /mnt/config/etc/logrotate.conf }
   /command/s6-setuidgid guardian /bin/cp /etc/logrotate.conf /mnt/config/etc/
 }
-foreground {
-  /command/s6-setuidgid guardian /bin/cp -Rn /etc/logrotate.d /mnt/config/etc/
-}
+foreground { /command/s6-setuidgid guardian /bin/cp -Rn /etc/logrotate.d /mnt/config/etc/ }

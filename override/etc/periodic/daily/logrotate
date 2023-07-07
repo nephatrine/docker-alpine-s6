@@ -1,19 +1,17 @@
-#!/command/with-contenv /bin/bash
+#!/command/with-contenv /bin/sh
 
 EXITVALUE=0
 
-if [[ -f /mnt/config/etc/logrotate.conf ]]; then
-  if [[ ! -d /mnt/config/log ]]; then
-    /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
-  fi
-  
-  cd /mnt/config/log
-  /usr/bin/test -e logrotate.status || /command/s6-setuidgid guardian /bin/touch logrotate.status
-  /usr/bin/head -1 logrotate.status | /command/s6-setuidgid guardian /usr/bin/tee logrotate.clean
-  /bin/sed 's/"//g' logrotate.status | while read logfile date; do
+if [ ! -d /mnt/config/log ]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
+fi
+if [ -f /mnt/config/etc/logrotate.conf ] && [ -d /mnt/config/log ]; then
+  /usr/bin/test -e /mnt/config/log/logrotate.status || /command/s6-setuidgid guardian /bin/touch /mnt/config/log/logrotate.status
+  /usr/bin/head -1 /mnt/config/log/logrotate.status | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/log/logrotate.clean
+  /bin/sed 's/"//g' /mnt/config/log/logrotate.status | while read -r logfile date; do
     [ -e "$logfile" ] && echo "\"$logfile\" $date"
-  done | /command/s6-setuidgid guardian /usr/bin/tee -a logrotate.clean
-  /command/s6-setuidgid guardian /bin/mv logrotate.clean logrotate.status
+  done | /command/s6-setuidgid guardian /usr/bin/tee -a /mnt/config/log/logrotate.clean
+  /command/s6-setuidgid guardian /bin/mv /mnt/config/log/logrotate.clean /mnt/config/log/logrotate.status
 
   if [ -f /etc/conf.d/logrotate ]; then
     . /etc/conf.d/logrotate
