@@ -6,7 +6,7 @@ on:
     - cron:  '20 18 * * 2'
 jobs:
   build_amd64:
-    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, 'noci') || gitea.event_name != 'push')
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name != 'push')
     runs-on: nephnet-amd64
     steps:
       - name: Checkout Repository
@@ -30,7 +30,7 @@ jobs:
           title: "Container Build (X86_64)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   build_arm64:
-    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, 'noci') || gitea.event_name != 'push')
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name != 'push')
     runs-on: nephnet-arm64
     steps:
       - name: Checkout Repository
@@ -54,7 +54,7 @@ jobs:
           title: "Container Build (AARCH64)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   build_armhf:
-    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, 'noci') || gitea.event_name != 'push')
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name != 'push')
     runs-on: nephnet-armhf
     steps:
       - name: Checkout Repository
@@ -78,7 +78,7 @@ jobs:
           title: "Container Build (ARMV7L)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   build_riscv64:
-    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, 'noci') || gitea.event_name != 'push')
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name != 'push')
     runs-on: nephnet-riscv64
     steps:
       - name: Checkout Repository
