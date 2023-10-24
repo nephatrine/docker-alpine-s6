@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: docker-alpine-s6
+Upstream-Contact: Daniel Wolf <nephatrine@gmail.com>
+Source: https://code.nephatrine.net/NephNET/docker-alpine-s6
+
+Files: override/etc/s6-overlay/*
+Copyright: 2022 - 2023 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
