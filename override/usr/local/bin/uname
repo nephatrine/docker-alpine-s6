@@ -1,0 +1,12 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
+
+if [ $(cat /etc/apk/arch) = "x86" ]; then
+  /usr/bin/setarch i386 /bin/uname $@
+elif [ $(cat /etc/apk/arch) = "armv7" ]; then
+  /usr/bin/setarch arm /bin/uname $@
+else
+  /bin/uname $@
+fi
