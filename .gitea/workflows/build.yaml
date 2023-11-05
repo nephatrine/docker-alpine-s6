@@ -7,7 +7,7 @@ run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_nam
 on:
   push:
   schedule:
-    - cron:  '20 18 * * 2'
+    - cron:  '0 18 * * 2'
 jobs:
   build_amd64:
     if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name == 'schedule')
@@ -19,8 +19,9 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-master}
+          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 || true
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 ${{ gitea.workspace }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -48,8 +49,9 @@ jobs:
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-master}
           sed -i 's~FROM alpine:~FROM i386/alpine:~g' Dockerfile
+          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --platform linux/386 || true
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386-cached --target builder --platform linux/386 ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --platform linux/386 ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --platform linux/386 ${{ gitea.workspace }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -76,8 +78,9 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-master}
+          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 || true
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 ${{ gitea.workspace }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -104,8 +107,9 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-master}
+          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --platform linux/arm/v7 || true
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7-cached --target builder --platform linux/arm/v7 ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --platform linux/arm/v7 ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --platform linux/arm/v7 ${{ gitea.workspace }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -133,8 +137,9 @@ jobs:
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-master}
           sed -i 's~FROM alpine:latest~FROM riscv64/alpine:edge~g' Dockerfile
+          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 || true
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 ${{ gitea.workspace }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -194,7 +199,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-i386
+          docker pull code.nephatrine.net/nephnet/alpine-s6:master-i386 --platform linux/386
           docker tag code.nephatrine.net/nephnet/alpine-s6:master-i386 nephatrine/alpine-s6:latest-i386
           docker push nephatrine/alpine-s6:latest-i386
           docker rmi nephatrine/alpine-s6:latest-i386
@@ -226,7 +231,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-armv7
+          docker pull code.nephatrine.net/nephnet/alpine-s6:master-armv7 --platform linux/arm/v7
           docker tag code.nephatrine.net/nephnet/alpine-s6:master-armv7 nephatrine/alpine-s6:latest-armv7
           docker push nephatrine/alpine-s6:latest-armv7
           docker rmi nephatrine/alpine-s6:latest-armv7
