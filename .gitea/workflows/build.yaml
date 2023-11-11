@@ -270,13 +270,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/alpine-s6:3.1.5.0 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest create nephatrine/alpine-s6:3.1.5 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
+          docker manifest create nephatrine/alpine-s6:3.1.6.0 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
+          docker manifest create nephatrine/alpine-s6:3.1.6 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
           docker manifest create nephatrine/alpine-s6:3.1 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
           docker manifest create nephatrine/alpine-s6:3 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
           docker manifest create nephatrine/alpine-s6:latest --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest push --purge nephatrine/alpine-s6:3.1.5.0
-          docker manifest push --purge nephatrine/alpine-s6:3.1.5
+          docker manifest push --purge nephatrine/alpine-s6:3.1.6.0
+          docker manifest push --purge nephatrine/alpine-s6:3.1.6
           docker manifest push --purge nephatrine/alpine-s6:3.1
           docker manifest push --purge nephatrine/alpine-s6:3
           docker manifest push --purge nephatrine/alpine-s6:latest

@@ -4,7 +4,7 @@
 
 FROM nephatrine/nxbuilder:alpine AS builder
 
-ARG S6_OVERLAY_VERSION=v3.1.5.0
+ARG S6_OVERLAY_VERSION=v3.1.6.0
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
 RUN sed -i 's~=$(TOOLCHAIN_PATH)/bin/$(ARCH)-~=/usr/bin/$(ARCH)-~g' /root/s6-overlay/mk/bearssl.mk
 RUN sed -i 's~ $(TOOLCHAIN_PATH)/bin/$(ARCH)-gcc~~g' /root/s6-overlay/mk/skaware.mk /root/s6-overlay/mk/bearssl.mk
