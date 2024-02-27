@@ -135,6 +135,7 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-master}
+          sed -i 's~FROM alpine:latest~FROM alpine:edge~g' Dockerfile
           docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 || true
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64-cached --target builder ${{ gitea.workspace }}
           docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 ${{ gitea.workspace }}
