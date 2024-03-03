@@ -399,7 +399,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
-        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:edge -t nephatrine/alpine-s6:edge -t nephatrine/alpine-s6:edge-3.1.6.2 -t nephatrine/alpine-s6:edge-3.1.6 -t nephatrine/alpine-s6:edge-3.1 -t nephatrine/alpine-s6:edge-3 code.nephatrine.net/nephnet/alpine-s6:edge-amd64 code.nephatrine.net/nephnet/alpine-s6:edge-i386 code.nephatrine.net/nephnet/alpine-s6:edge-arm64 code.nephatrine.net/nephnet/alpine-s6:edge-armv7 code.nephatrine.net/nephnet/alpine-s6:edge-riscv64
+        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:edge -t nephatrine/alpine-s6:edge code.nephatrine.net/nephnet/alpine-s6:edge-amd64 code.nephatrine.net/nephnet/alpine-s6:edge-i386 code.nephatrine.net/nephnet/alpine-s6:edge-arm64 code.nephatrine.net/nephnet/alpine-s6:edge-armv7 code.nephatrine.net/nephnet/alpine-s6:edge-riscv64
   build_manifest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_amd64, build_i386, build_arm64, build_armhf]
@@ -425,7 +425,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
-        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:latest -t nephatrine/alpine-s6:latest -t nephatrine/alpine-s6:latest-3.1.6.2 -t nephatrine/alpine-s6:latest-3.1.6 -t nephatrine/alpine-s6:latest-3.1 -t nephatrine/alpine-s6:latest-3 code.nephatrine.net/nephnet/alpine-s6:latest-amd64 code.nephatrine.net/nephnet/alpine-s6:latest-i386 code.nephatrine.net/nephnet/alpine-s6:latest-arm64 code.nephatrine.net/nephnet/alpine-s6:latest-armv7
+        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:latest -t nephatrine/alpine-s6:latest -t nephatrine/alpine-s6:3.1.6.2 -t nephatrine/alpine-s6:3.1.6 -t nephatrine/alpine-s6:3.1 -t nephatrine/alpine-s6:3 code.nephatrine.net/nephnet/alpine-s6:latest-amd64 code.nephatrine.net/nephnet/alpine-s6:latest-i386 code.nephatrine.net/nephnet/alpine-s6:latest-arm64 code.nephatrine.net/nephnet/alpine-s6:latest-armv7
       - name: Notify Discord
         if: gitea.event_name != 'schedule' || steps.checkbase.outputs.needs-updating == 'true'
         uses: https://github.com/sarisia/actions-status-discord@v1
