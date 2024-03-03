@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
@@ -14,14 +14,9 @@ jobs:
     runs-on: nephnet-amd64
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 || true
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-amd64 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -29,9 +24,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/alpine-s6:master-amd64
+        with:
+          context: .
+          platforms: linux/amd64
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/alpine-s6:latest-amd64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-amd64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-amd64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-latest-amd64 --platform linux/amd64 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -43,14 +53,9 @@ jobs:
     runs-on: nephnet-i386
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --platform linux/386 || true
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386-cached --target builder --platform linux/386 ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-i386 --platform linux/386 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -58,9 +63,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/alpine-s6:master-i386
+        with:
+          context: .
+          platforms: linux/386
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/alpine-s6:latest-i386
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-i386
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-i386,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-latest-i386 --platform linux/386 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -72,14 +92,9 @@ jobs:
     runs-on: nephnet-arm64
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 || true
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-arm64v8 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -87,9 +102,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/alpine-s6:master-arm64v8
+        with:
+          context: .
+          platforms: linux/arm64/v8
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/alpine-s6:latest-arm64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-arm64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-arm64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-latest-arm64 --platform linux/arm64/v8 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -101,14 +131,9 @@ jobs:
     runs-on: nephnet-armhf
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --platform linux/arm/v7 || true
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7-cached --target builder --platform linux/arm/v7 ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-armv7 --platform linux/arm/v7 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -116,29 +141,39 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/alpine-s6:master-armv7
+        with:
+          context: .
+          platforms: linux/arm/v7
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/alpine-s6:latest-armv7
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-armv7
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:latest-armv7,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-latest-armv7 --platform linux/arm/v7 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
           title: "Container Build (ARMV7L)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  build_riscv64:
+  edge_amd64:
     if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name == 'schedule')
-    runs-on: nephnet-riscv64
+    runs-on: nephnet-amd64
+    continue-on-error: true
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          sed -i 's~FROM alpine:latest~FROM alpine:edge~g' Dockerfile
-          docker pull code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 || true
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 --cache-from code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-riscv64 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -146,19 +181,198 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/alpine-s6:master-riscv64
+        with:
+          context: .
+          platforms: linux/amd64
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.edge
+          tags: code.nephatrine.net/nephnet/alpine-s6:edge-amd64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-amd64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-amd64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-edge-amd64 --platform linux/amd64 -f Dockerfile.edge ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (RISCV64)"
+          title: "Container Build (X86_64; EDGE)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  build_manifest:
+  edge_i386:
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name == 'schedule')
+    runs-on: nephnet-i386
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/386
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.edge
+          tags: code.nephatrine.net/nephnet/alpine-s6:edge-i386
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-i386
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-i386,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-edge-i386 --platform linux/386 -f Dockerfile.edge ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (I686; EDGE)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  edge_arm64:
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name == 'schedule')
+    runs-on: nephnet-arm64
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/arm64/v8
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.edge
+          tags: code.nephatrine.net/nephnet/alpine-s6:edge-arm64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-arm64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-arm64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-edge-arm64 --platform linux/arm64/v8 -f Dockerfile.edge ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (AARCH64; EDGE)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  edge_armhf:
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name == 'schedule')
+    runs-on: nephnet-armhf
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/arm/v7
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.edge
+          tags: code.nephatrine.net/nephnet/alpine-s6:edge-armv7
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-armv7
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-armv7,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-edge-armv7 --platform linux/arm/v7 -f Dockerfile.edge ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (ARMV7L; EDGE)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  edge_riscv64:
+    if: gitea.repository_owner == 'NephNET' && (!contains(gitea.event.head_commit.message, '#noci') || gitea.event_name == 'schedule')
+    runs-on: nephnet-riscv64
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/riscv64
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.edge
+          tags: code.nephatrine.net/nephnet/alpine-s6:edge-riscv64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-riscv64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-cache:edge-riscv64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-edge-riscv64 --platform linux/riscv64 -f Dockerfile.edge ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (RISCV64; EDGE)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  internal_manifest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_amd64, build_i386, build_arm64, build_armhf, build_riscv64]
-    runs-on: nephnet
+    needs: [build_amd64, build_i386, build_arm64, build_armhf, edge_riscv64]
+    runs-on: nephnet-amd64
     steps:
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
@@ -167,92 +381,29 @@ jobs:
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
-        run: |
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:latest --amend code.nephatrine.net/nephnet/alpine-s6:master-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:master-i386 --amend code.nephatrine.net/nephnet/alpine-s6:master-arm64v8 --amend code.nephatrine.net/nephnet/alpine-s6:master-armv7 --amend code.nephatrine.net/nephnet/alpine-s6:master-riscv64
-          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:latest
-  publish_amd64:
+        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:internal code.nephatrine.net/nephnet/alpine-s6:latest-amd64 code.nephatrine.net/nephnet/alpine-s6:latest-i386 code.nephatrine.net/nephnet/alpine-s6:latest-arm64 code.nephatrine.net/nephnet/alpine-s6:latest-armv7 code.nephatrine.net/nephnet/alpine-s6:edge-riscv64
+  edge_manifest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_amd64]
+    needs: [edge_amd64, edge_i386, edge_arm64, edge_armhf, edge_riscv64]
     runs-on: nephnet-amd64
     steps:
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-amd64
-          docker tag code.nephatrine.net/nephnet/alpine-s6:master-amd64 nephatrine/alpine-s6:latest-amd64
-          docker push nephatrine/alpine-s6:latest-amd64
-          docker rmi nephatrine/alpine-s6:latest-amd64
-  publish_i386:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_i386]
-    runs-on: nephnet-i386
-    steps:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-i386 --platform linux/386
-          docker tag code.nephatrine.net/nephnet/alpine-s6:master-i386 nephatrine/alpine-s6:latest-i386
-          docker push nephatrine/alpine-s6:latest-i386
-          docker rmi nephatrine/alpine-s6:latest-i386
-  publish_arm64:
+      - name: Docker Manifest
+        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:edge -t nephatrine/alpine-s6:edge code.nephatrine.net/nephnet/alpine-s6:edge-amd64 code.nephatrine.net/nephnet/alpine-s6:edge-i386 code.nephatrine.net/nephnet/alpine-s6:edge-arm64 code.nephatrine.net/nephnet/alpine-s6:edge-armv7 code.nephatrine.net/nephnet/alpine-s6:edge-riscv64
+  build_manifest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_arm64]
-    runs-on: nephnet-arm64
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-arm64v8
-          docker tag code.nephatrine.net/nephnet/alpine-s6:master-arm64v8 nephatrine/alpine-s6:latest-arm64v8
-          docker push nephatrine/alpine-s6:latest-arm64v8
-          docker rmi nephatrine/alpine-s6:latest-arm64v8
-  publish_armhf:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_armhf]
-    runs-on: nephnet-armhf
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-armv7 --platform linux/arm/v7
-          docker tag code.nephatrine.net/nephnet/alpine-s6:master-armv7 nephatrine/alpine-s6:latest-armv7
-          docker push nephatrine/alpine-s6:latest-armv7
-          docker rmi nephatrine/alpine-s6:latest-armv7
-  publish_riscv64:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_riscv64]
-    runs-on: nephnet-riscv64
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:master-riscv64
-          docker tag code.nephatrine.net/nephnet/alpine-s6:master-riscv64 nephatrine/alpine-s6:latest-riscv64
-          docker push nephatrine/alpine-s6:latest-riscv64
-          docker rmi nephatrine/alpine-s6:latest-riscv64
-  publish_manifest:
-    needs: [publish_amd64, publish_i386, publish_arm64, publish_armhf, publish_riscv64]
-    runs-on: nephnet
+    needs: [build_amd64, build_i386, build_arm64, build_armhf]
+    runs-on: nephnet-amd64
     steps:
       - name: Check Base Image
         if: gitea.event_name == 'schedule'
@@ -265,20 +416,16 @@ jobs:
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
-        run: |
-          docker manifest create nephatrine/alpine-s6:3.1.6.2 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest create nephatrine/alpine-s6:3.1.6 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest create nephatrine/alpine-s6:3.1 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest create nephatrine/alpine-s6:3 --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest create nephatrine/alpine-s6:latest --amend nephatrine/alpine-s6:latest-amd64 --amend nephatrine/alpine-s6:latest-i386 --amend nephatrine/alpine-s6:latest-arm64v8 --amend nephatrine/alpine-s6:latest-armv7 --amend nephatrine/alpine-s6:latest-riscv64
-          docker manifest push --purge nephatrine/alpine-s6:3.1.6.2
-          docker manifest push --purge nephatrine/alpine-s6:3.1.6
-          docker manifest push --purge nephatrine/alpine-s6:3.1
-          docker manifest push --purge nephatrine/alpine-s6:3
-          docker manifest push --purge nephatrine/alpine-s6:latest
+        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/alpine-s6:latest -t nephatrine/alpine-s6:latest code.nephatrine.net/nephnet/alpine-s6:latest-amd64 code.nephatrine.net/nephnet/alpine-s6:latest-i386 code.nephatrine.net/nephnet/alpine-s6:latest-arm64 code.nephatrine.net/nephnet/alpine-s6:latest-armv7
       - name: Notify Discord
         if: gitea.event_name != 'schedule' || steps.checkbase.outputs.needs-updating == 'true'
         uses: https://github.com/sarisia/actions-status-discord@v1
@@ -288,10 +435,16 @@ jobs:
           nodetail: true
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
+        uses: https://gitea.com/actions/checkout@v4
       - name: Docker Describe
         uses: https://github.com/peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
           repository: nephatrine/alpine-s6
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Publish"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
