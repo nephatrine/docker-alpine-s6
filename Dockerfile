@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: ISC
 
-FROM code.nephatrine.net/nephnet/nxb-alpine:latest AS builder
+FROM code.nephatrine.net/nephnet/nxb-alpine:3.19 AS builder
 
 ARG S6_OVERLAY_VERSION=v3.1.6.2
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git
@@ -25,7 +25,7 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) syslogd-overlay-noarch \
  && mv /root/s6-overlay/output/rootfs-overlay-${ARCH_TRIPLET} /root/s6-overlay/output/rootfs-overlay-arch
 
-FROM alpine:latest
+FROM alpine:3.19
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
