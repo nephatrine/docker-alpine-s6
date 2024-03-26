@@ -9,6 +9,262 @@ on:
   schedule:
     - cron:  '0 18 * * 2'
 jobs:
+  build_previous_amd64:
+    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
+    runs-on: nephnet-amd64
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Login (Pull Auth)
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/amd64
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.previous
+          tags: code.nephatrine.net/nephnet/alpine-s6-amd64:previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:previous-cache
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:previous-cache,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-previous-amd64 --platform linux/amd64 -f Dockerfile.previous ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure() || gitea.event_name != 'schedule'
+        with:
+          title: "Container Build (X86_64; 3.18)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  push_previous_amd64:
+    if: gitea.ref_name == 'master' || gitea.ref_name == ''
+    needs: [build_previous_amd64]
+    runs-on: nephnet-amd64
+    continue-on-error: true
+    steps:
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Tag & Push
+        run: |
+          docker pull code.nephatrine.net/nephnet/alpine-s6-amd64:previous --platform linux/amd64
+          docker tag code.nephatrine.net/nephnet/alpine-s6-amd64:previous nephatrine/amd64:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/alpine-s6-amd64:previous
+          docker push nephatrine/amd64:alpine-s6-previous
+          docker rmi nephatrine/amd64:alpine-s6-previous
+  build_previous_i386:
+    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
+    runs-on: nephnet-i386
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Login (Pull Auth)
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/386
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.previous
+          tags: code.nephatrine.net/nephnet/alpine-s6-i386:previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-i386:previous-cache
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-i386:previous-cache,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-previous-i386 --platform linux/386 -f Dockerfile.previous ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (I686; 3.18)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  push_previous_i386:
+    if: gitea.ref_name == 'master' || gitea.ref_name == ''
+    needs: [build_previous_i386]
+    runs-on: nephnet-amd64
+    continue-on-error: true
+    steps:
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Tag & Push
+        run: |
+          docker pull code.nephatrine.net/nephnet/alpine-s6-i386:previous --platform linux/386
+          docker tag code.nephatrine.net/nephnet/alpine-s6-i386:previous nephatrine/ia32:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/alpine-s6-i386:previous
+          docker push nephatrine/ia32:alpine-s6-previous
+          docker rmi nephatrine/ia32:alpine-s6-previous
+  build_previous_arm64:
+    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
+    runs-on: nephnet-arm64
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Login (Pull Auth)
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/arm64/v8
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.previous
+          tags: code.nephatrine.net/nephnet/alpine-s6-arm64:previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:previous-cache
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:previous-cache,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-previous-arm64 --platform linux/arm64/v8 -f Dockerfile.previous ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (AARCH64; 3.18)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  push_previous_arm64:
+    if: gitea.ref_name == 'master' || gitea.ref_name == ''
+    needs: [build_previous_arm64]
+    runs-on: nephnet-amd64
+    continue-on-error: true
+    steps:
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Tag & Push
+        run: |
+          docker pull code.nephatrine.net/nephnet/alpine-s6-arm64:previous --platform linux/arm64/v8
+          docker tag code.nephatrine.net/nephnet/alpine-s6-arm64:previous nephatrine/arm64:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/alpine-s6-arm64:previous
+          docker push nephatrine/arm64:alpine-s6-previous
+          docker rmi nephatrine/arm64:alpine-s6-previous
+  build_previous_armhf:
+    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
+    runs-on: nephnet-armhf
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Login (Pull Auth)
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
+        if: gitea.ref_name == 'master' || gitea.ref_name == ''
+        with:
+          context: .
+          platforms: linux/arm/v7
+          provenance: false
+          pull: true
+          push: true
+          file: Dockerfile.previous
+          tags: code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:previous-cache
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:previous-cache,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/alpine-s6:${BRANCH}-previous-armv7 --platform linux/arm/v7 -f Dockerfile.previous ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Build (ARMV7L; 3.18)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  push_previous_armhf:
+    if: gitea.ref_name == 'master' || gitea.ref_name == ''
+    needs: [build_previous_armhf]
+    runs-on: nephnet-amd64
+    continue-on-error: true
+    steps:
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Tag & Push
+        run: |
+          docker pull code.nephatrine.net/nephnet/alpine-s6-armv7:previous --platform linux/arm/v7
+          docker tag code.nephatrine.net/nephnet/alpine-s6-armv7:previous nephatrine/armv7:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker push nephatrine/armv7:alpine-s6-previous
+          docker rmi nephatrine/armv7:alpine-s6-previous
   build_latest_amd64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-amd64
@@ -585,6 +841,74 @@ jobs:
           docker rmi code.nephatrine.net/nephnet/alpine-s6-riscv64:edge
           docker push nephatrine/riscv64:alpine-s6-edge
           docker rmi nephatrine/riscv64:alpine-s6-edge
+  build_previous:
+    if: gitea.ref_name == 'master' || gitea.ref_name == ''
+    needs: [build_previous_amd64, build_previous_i386, build_previous_arm64, build_previous_armhf]
+    runs-on: nephnet
+    continue-on-error: true
+    steps:
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Manifest
+        run: |
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6.2 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18
+          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6.2
+          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6
+          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18-3.1
+          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18-3
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Publish (3.18)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
+  push_previous:
+    needs: [push_previous_amd64, push_previous_i386, push_previous_arm64, push_previous_armhf]
+    runs-on: nephnet
+    continue-on-error: true
+    steps:
+      - name: Check Base Image
+        if: gitea.event_name == 'schedule'
+        uses: https://github.com/lucacome/docker-image-update-checker@v1
+        id: checkbase
+        with:
+          base-image: alpine:3.18
+          image: nephatrine/alpine-s6:3.18
+          platforms: linux/amd64
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Docker Manifest
+        run: |
+          docker manifest create nephatrine/alpine-s6:3.18 --amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous
+          docker manifest create nephatrine/alpine-s6:3.18-3.1.6.2 --amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous
+          docker manifest create nephatrine/alpine-s6:3.18-3.1.6 --amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous
+          docker manifest create nephatrine/alpine-s6:3.18-3.1 --amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous
+          docker manifest create nephatrine/alpine-s6:3.18-3 --amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous
+          docker manifest push --purge nephatrine/alpine-s6:3.18
+          docker manifest push --purge nephatrine/alpine-s6:3.18-3.1.6.2
+          docker manifest push --purge nephatrine/alpine-s6:3.18-3.1.6
+          docker manifest push --purge nephatrine/alpine-s6:3.18-3.1
+          docker manifest push --purge nephatrine/alpine-s6:3.18-3
+      - name: Notify Discord
+        if: gitea.event_name != 'schedule' || steps.checkbase.outputs.needs-updating == 'true'
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        with:
+          title: "DockerHub: alpine-s6 (3.18)"
+          description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/alpine-s6/general).\nPull `nephatrine/alpine-s6:3.18` for the newest image."
+          nodetail: true
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   build_latest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_latest_amd64, build_latest_i386, build_latest_arm64, build_latest_armhf]
@@ -609,11 +933,6 @@ jobs:
           docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
           docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
           docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3-3.1.6.2 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3-3.1.6 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3-3.1 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3-3 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:latest
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:latest-3.1.6.2
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:latest-3.1.6
@@ -624,11 +943,6 @@ jobs:
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.19-3.1
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.19-3
-          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3
-          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3-3.1.6.2
-          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3-3.1.6
-          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3-3.1
-          docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3-3
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -665,11 +979,6 @@ jobs:
           docker manifest create nephatrine/alpine-s6:3.19-3.1.6 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
           docker manifest create nephatrine/alpine-s6:3.19-3.1 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
           docker manifest create nephatrine/alpine-s6:3.19-3 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
-          docker manifest create nephatrine/alpine-s6:3 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
-          docker manifest create nephatrine/alpine-s6:3-3.1.6.2 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
-          docker manifest create nephatrine/alpine-s6:3-3.1.6 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
-          docker manifest create nephatrine/alpine-s6:3-3.1 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
-          docker manifest create nephatrine/alpine-s6:3-3 --amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest
           docker manifest push --purge nephatrine/alpine-s6:latest
           docker manifest push --purge nephatrine/alpine-s6:latest-3.1.6.2
           docker manifest push --purge nephatrine/alpine-s6:latest-3.1.6
@@ -680,11 +989,6 @@ jobs:
           docker manifest push --purge nephatrine/alpine-s6:3.19-3.1.6
           docker manifest push --purge nephatrine/alpine-s6:3.19-3.1
           docker manifest push --purge nephatrine/alpine-s6:3.19-3
-          docker manifest push --purge nephatrine/alpine-s6:3
-          docker manifest push --purge nephatrine/alpine-s6:3-3.1.6.2
-          docker manifest push --purge nephatrine/alpine-s6:3-3.1.6
-          docker manifest push --purge nephatrine/alpine-s6:3-3.1
-          docker manifest push --purge nephatrine/alpine-s6:3-3
       - name: Notify Discord
         if: gitea.event_name != 'schedule' || steps.checkbase.outputs.needs-updating == 'true'
         uses: https://github.com/sarisia/actions-status-discord@v1
@@ -762,7 +1066,7 @@ jobs:
           nodetail: true
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   update_readme:
-    needs: [push_latest, push_edge]
+    needs: [push_previous, push_latest, push_edge]
     runs-on: nephnet
     continue-on-error: true
     steps:
