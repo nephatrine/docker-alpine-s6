@@ -3,6 +3,30 @@ Upstream-Name: docker-alpine-s6
 Upstream-Contact: Daniel Wolf <nephatrine@gmail.com>
 Source: https://code.nephatrine.net/NephNET/docker-alpine-s6
 
-Files: override/etc/s6-overlay/*
-Copyright: 2022 - 2023 Daniel Wolf <nephatrine@gmail.com>
+Files: override/etc/s6-overlay/s6-rc.d/crond/dependencies.d/*
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
+
+Files: override/etc/s6-overlay/s6-rc.d/logrotate_setup/dependencies.d/*
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
+
+Files: override/etc/s6-overlay/s6-rc.d/crond/type
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
+
+Files: override/etc/s6-overlay/s6-rc.d/guardian_setup/type
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
+
+Files: override/etc/s6-overlay/s6-rc.d/logrotate_setup/type
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
+
+Files: override/etc/s6-overlay/s6-rc.d/timezone_setup/type
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
+License: ISC
+
+Files: override/etc/s6-overlay/s6-rc.d/user/contents.d/*
+Copyright: 2022 Daniel Wolf <nephatrine@gmail.com>
 License: ISC

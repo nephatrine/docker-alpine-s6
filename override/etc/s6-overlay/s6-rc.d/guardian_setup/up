@@ -1,4 +1,7 @@
 #!/command/execlineb
+# SPDX-FileCopyrightText: 2022 - 2024 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
 
 backtick PUID { /command/with-contenv /bin/bash -c "/bin/echo ${PUID:-1000}" }
 backtick PGID { /command/with-contenv /bin/bash -c "/bin/echo ${PGID:-100}" }

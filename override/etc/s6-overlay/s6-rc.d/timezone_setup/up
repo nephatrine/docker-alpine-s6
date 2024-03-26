@@ -1,4 +1,7 @@
 #!/command/execlineb
+# SPDX-FileCopyrightText: 2022 - 2024 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
 
 backtick TZ { /command/with-contenv /bin/bash -c "/bin/echo ${TZ:-"America/New_York"}" }
 importas tz TZ
