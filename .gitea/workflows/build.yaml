@@ -40,9 +40,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.previous
-          tags: code.nephatrine.net/nephnet/alpine-s6-amd64:previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:previous-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:previous-cache,mode=max
+          tags: code.nephatrine.net/nephnet/amd64:alpine-s6-previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/amd64-cache:alpine-s6-previous
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/amd64-cache:alpine-s6-previous,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -68,9 +68,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-amd64:previous --platform linux/amd64
-          docker tag code.nephatrine.net/nephnet/alpine-s6-amd64:previous nephatrine/amd64:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-amd64:previous
+          docker pull code.nephatrine.net/nephnet/amd64:alpine-s6-previous --platform linux/amd64
+          docker tag code.nephatrine.net/nephnet/amd64:alpine-s6-previous nephatrine/amd64:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/amd64:alpine-s6-previous
           docker push nephatrine/amd64:alpine-s6-previous
           docker rmi nephatrine/amd64:alpine-s6-previous
   build_previous_i386:
@@ -104,9 +104,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.previous
-          tags: code.nephatrine.net/nephnet/alpine-s6-i386:previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-i386:previous-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-i386:previous-cache,mode=max
+          tags: code.nephatrine.net/nephnet/i386:alpine-s6-previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/i386-cache:alpine-s6-previous
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/i386-cache:alpine-s6-previous,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -132,9 +132,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-i386:previous --platform linux/386
-          docker tag code.nephatrine.net/nephnet/alpine-s6-i386:previous nephatrine/ia32:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-i386:previous
+          docker pull code.nephatrine.net/nephnet/i386:alpine-s6-previous --platform linux/386
+          docker tag code.nephatrine.net/nephnet/i386:alpine-s6-previous nephatrine/ia32:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/i386:alpine-s6-previous
           docker push nephatrine/ia32:alpine-s6-previous
           docker rmi nephatrine/ia32:alpine-s6-previous
   build_previous_arm64:
@@ -168,9 +168,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.previous
-          tags: code.nephatrine.net/nephnet/alpine-s6-arm64:previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:previous-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:previous-cache,mode=max
+          tags: code.nephatrine.net/nephnet/arm64:alpine-s6-previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/arm64-cache:alpine-s6-previous
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/arm64-cache:alpine-s6-previous,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -196,9 +196,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-arm64:previous --platform linux/arm64/v8
-          docker tag code.nephatrine.net/nephnet/alpine-s6-arm64:previous nephatrine/arm64:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-arm64:previous
+          docker pull code.nephatrine.net/nephnet/arm64:alpine-s6-previous --platform linux/arm64/v8
+          docker tag code.nephatrine.net/nephnet/arm64:alpine-s6-previous nephatrine/arm64:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/arm64:alpine-s6-previous
           docker push nephatrine/arm64:alpine-s6-previous
           docker rmi nephatrine/arm64:alpine-s6-previous
   build_previous_armhf:
@@ -232,9 +232,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.previous
-          tags: code.nephatrine.net/nephnet/alpine-s6-armv7:previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:previous-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:previous-cache,mode=max
+          tags: code.nephatrine.net/nephnet/armv7:alpine-s6-previous
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/armv7-cache:alpine-s6-previous
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/armv7-cache:alpine-s6-previous,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -260,9 +260,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-armv7:previous --platform linux/arm/v7
-          docker tag code.nephatrine.net/nephnet/alpine-s6-armv7:previous nephatrine/armv7:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker pull code.nephatrine.net/nephnet/armv7:alpine-s6-previous --platform linux/arm/v7
+          docker tag code.nephatrine.net/nephnet/armv7:alpine-s6-previous nephatrine/armv7:alpine-s6-previous
+          docker rmi code.nephatrine.net/nephnet/armv7:alpine-s6-previous
           docker push nephatrine/armv7:alpine-s6-previous
           docker rmi nephatrine/armv7:alpine-s6-previous
   build_latest_amd64:
@@ -296,9 +296,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/alpine-s6-amd64:latest
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:latest-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:latest-cache,mode=max
+          tags: code.nephatrine.net/nephnet/amd64:alpine-s6-latest
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/amd64-cache:alpine-s6-latest
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/amd64-cache:alpine-s6-latest,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -324,9 +324,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-amd64:latest --platform linux/amd64
-          docker tag code.nephatrine.net/nephnet/alpine-s6-amd64:latest nephatrine/amd64:alpine-s6-latest
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-amd64:latest
+          docker pull code.nephatrine.net/nephnet/amd64:alpine-s6-latest --platform linux/amd64
+          docker tag code.nephatrine.net/nephnet/amd64:alpine-s6-latest nephatrine/amd64:alpine-s6-latest
+          docker rmi code.nephatrine.net/nephnet/amd64:alpine-s6-latest
           docker push nephatrine/amd64:alpine-s6-latest
           docker rmi nephatrine/amd64:alpine-s6-latest
   build_latest_i386:
@@ -360,9 +360,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/alpine-s6-i386:latest
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-i386:latest-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-i386:latest-cache,mode=max
+          tags: code.nephatrine.net/nephnet/i386:alpine-s6-latest
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/i386-cache:alpine-s6-latest
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/i386-cache:alpine-s6-latest,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -388,9 +388,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-i386:latest --platform linux/386
-          docker tag code.nephatrine.net/nephnet/alpine-s6-i386:latest nephatrine/ia32:alpine-s6-latest
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-i386:latest
+          docker pull code.nephatrine.net/nephnet/i386:alpine-s6-latest --platform linux/386
+          docker tag code.nephatrine.net/nephnet/i386:alpine-s6-latest nephatrine/ia32:alpine-s6-latest
+          docker rmi code.nephatrine.net/nephnet/i386:alpine-s6-latest
           docker push nephatrine/ia32:alpine-s6-latest
           docker rmi nephatrine/ia32:alpine-s6-latest
   build_latest_arm64:
@@ -424,9 +424,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/alpine-s6-arm64:latest
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:latest-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:latest-cache,mode=max
+          tags: code.nephatrine.net/nephnet/arm64:alpine-s6-latest
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/arm64-cache:alpine-s6-latest
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/arm64-cache:alpine-s6-latest,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -452,9 +452,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-arm64:latest --platform linux/arm64/v8
-          docker tag code.nephatrine.net/nephnet/alpine-s6-arm64:latest nephatrine/arm64:alpine-s6-latest
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-arm64:latest
+          docker pull code.nephatrine.net/nephnet/arm64:alpine-s6-latest --platform linux/arm64/v8
+          docker tag code.nephatrine.net/nephnet/arm64:alpine-s6-latest nephatrine/arm64:alpine-s6-latest
+          docker rmi code.nephatrine.net/nephnet/arm64:alpine-s6-latest
           docker push nephatrine/arm64:alpine-s6-latest
           docker rmi nephatrine/arm64:alpine-s6-latest
   build_latest_armhf:
@@ -488,9 +488,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:latest-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:latest-cache,mode=max
+          tags: code.nephatrine.net/nephnet/armv7:alpine-s6-latest
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/armv7-cache:alpine-s6-latest
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/armv7-cache:alpine-s6-latest,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -516,9 +516,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-armv7:latest --platform linux/arm/v7
-          docker tag code.nephatrine.net/nephnet/alpine-s6-armv7:latest nephatrine/armv7:alpine-s6-latest
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-armv7:latest
+          docker pull code.nephatrine.net/nephnet/armv7:alpine-s6-latest --platform linux/arm/v7
+          docker tag code.nephatrine.net/nephnet/armv7:alpine-s6-latest nephatrine/armv7:alpine-s6-latest
+          docker rmi code.nephatrine.net/nephnet/armv7:alpine-s6-latest
           docker push nephatrine/armv7:alpine-s6-latest
           docker rmi nephatrine/armv7:alpine-s6-latest
   build_edge_amd64:
@@ -552,9 +552,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.edge
-          tags: code.nephatrine.net/nephnet/alpine-s6-amd64:edge
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:edge-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-amd64:edge-cache,mode=max
+          tags: code.nephatrine.net/nephnet/amd64:alpine-s6-edge
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/amd64-cache:alpine-s6-edge
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/amd64-cache:alpine-s6-edge,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -580,9 +580,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-amd64:edge --platform linux/amd64
-          docker tag code.nephatrine.net/nephnet/alpine-s6-amd64:edge nephatrine/amd64:alpine-s6-edge
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-amd64:edge
+          docker pull code.nephatrine.net/nephnet/amd64:alpine-s6-edge --platform linux/amd64
+          docker tag code.nephatrine.net/nephnet/amd64:alpine-s6-edge nephatrine/amd64:alpine-s6-edge
+          docker rmi code.nephatrine.net/nephnet/amd64:alpine-s6-edge
           docker push nephatrine/amd64:alpine-s6-edge
           docker rmi nephatrine/amd64:alpine-s6-edge
   build_edge_i386:
@@ -616,9 +616,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.edge
-          tags: code.nephatrine.net/nephnet/alpine-s6-i386:edge
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-i386:edge-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-i386:edge-cache,mode=max
+          tags: code.nephatrine.net/nephnet/i386:alpine-s6-edge
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/i386-cache:alpine-s6-edge
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/i386-cache:alpine-s6-edge,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -644,9 +644,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-i386:edge --platform linux/386
-          docker tag code.nephatrine.net/nephnet/alpine-s6-i386:edge nephatrine/ia32:alpine-s6-edge
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-i386:edge
+          docker pull code.nephatrine.net/nephnet/i386:alpine-s6-edge --platform linux/386
+          docker tag code.nephatrine.net/nephnet/i386:alpine-s6-edge nephatrine/ia32:alpine-s6-edge
+          docker rmi code.nephatrine.net/nephnet/i386:alpine-s6-edge
           docker push nephatrine/ia32:alpine-s6-edge
           docker rmi nephatrine/ia32:alpine-s6-edge
   build_edge_arm64:
@@ -680,9 +680,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.edge
-          tags: code.nephatrine.net/nephnet/alpine-s6-arm64:edge
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:edge-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-arm64:edge-cache,mode=max
+          tags: code.nephatrine.net/nephnet/arm64:alpine-s6-edge
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/arm64-cache:alpine-s6-edge
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/arm64-cache:alpine-s6-edge,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -708,9 +708,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-arm64:edge --platform linux/arm64/v8
-          docker tag code.nephatrine.net/nephnet/alpine-s6-arm64:edge nephatrine/arm64:alpine-s6-edge
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-arm64:edge
+          docker pull code.nephatrine.net/nephnet/arm64:alpine-s6-edge --platform linux/arm64/v8
+          docker tag code.nephatrine.net/nephnet/arm64:alpine-s6-edge nephatrine/arm64:alpine-s6-edge
+          docker rmi code.nephatrine.net/nephnet/arm64:alpine-s6-edge
           docker push nephatrine/arm64:alpine-s6-edge
           docker rmi nephatrine/arm64:alpine-s6-edge
   build_edge_armhf:
@@ -744,9 +744,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.edge
-          tags: code.nephatrine.net/nephnet/alpine-s6-armv7:edge
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:edge-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-armv7:edge-cache,mode=max
+          tags: code.nephatrine.net/nephnet/armv7:alpine-s6-edge
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/armv7-cache:alpine-s6-edge
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/armv7-cache:alpine-s6-edge,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -772,9 +772,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-armv7:edge --platform linux/arm/v7
-          docker tag code.nephatrine.net/nephnet/alpine-s6-armv7:edge nephatrine/armv7:alpine-s6-edge
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-armv7:edge
+          docker pull code.nephatrine.net/nephnet/armv7:alpine-s6-edge --platform linux/arm/v7
+          docker tag code.nephatrine.net/nephnet/armv7:alpine-s6-edge nephatrine/armv7:alpine-s6-edge
+          docker rmi code.nephatrine.net/nephnet/armv7:alpine-s6-edge
           docker push nephatrine/armv7:alpine-s6-edge
           docker rmi nephatrine/armv7:alpine-s6-edge
   build_edge_riscv64:
@@ -808,9 +808,9 @@ jobs:
           pull: true
           push: true
           file: Dockerfile.edge
-          tags: code.nephatrine.net/nephnet/alpine-s6-riscv64:edge
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/alpine-s6-riscv64:edge-cache
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/alpine-s6-riscv64:edge-cache,mode=max
+          tags: code.nephatrine.net/nephnet/riscv64:alpine-s6-edge
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/riscv64-cache:alpine-s6-edge
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/riscv64-cache:alpine-s6-edge,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
@@ -836,9 +836,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6-riscv64:edge --platform linux/riscv64
-          docker tag code.nephatrine.net/nephnet/alpine-s6-riscv64:edge nephatrine/riscv64:alpine-s6-edge
-          docker rmi code.nephatrine.net/nephnet/alpine-s6-riscv64:edge
+          docker pull code.nephatrine.net/nephnet/riscv64:alpine-s6-edge --platform linux/riscv64
+          docker tag code.nephatrine.net/nephnet/riscv64:alpine-s6-edge nephatrine/riscv64:alpine-s6-edge
+          docker rmi code.nephatrine.net/nephnet/riscv64:alpine-s6-edge
           docker push nephatrine/riscv64:alpine-s6-edge
           docker rmi nephatrine/riscv64:alpine-s6-edge
   build_previous:
@@ -855,11 +855,11 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6.2 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:previous --amend code.nephatrine.net/nephnet/alpine-s6-i386:previous --amend code.nephatrine.net/nephnet/alpine-s6-arm64:previous --amend code.nephatrine.net/nephnet/alpine-s6-armv7:previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-previous --amend code.nephatrine.net/nephnet/i386:alpine-s6-previous --amend code.nephatrine.net/nephnet/arm64:alpine-s6-previous --amend code.nephatrine.net/nephnet/armv7:alpine-s6-previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6.2 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-previous --amend code.nephatrine.net/nephnet/i386:alpine-s6-previous --amend code.nephatrine.net/nephnet/arm64:alpine-s6-previous --amend code.nephatrine.net/nephnet/armv7:alpine-s6-previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-previous --amend code.nephatrine.net/nephnet/i386:alpine-s6-previous --amend code.nephatrine.net/nephnet/arm64:alpine-s6-previous --amend code.nephatrine.net/nephnet/armv7:alpine-s6-previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3.1 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-previous --amend code.nephatrine.net/nephnet/i386:alpine-s6-previous --amend code.nephatrine.net/nephnet/arm64:alpine-s6-previous --amend code.nephatrine.net/nephnet/armv7:alpine-s6-previous
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.18-3 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-previous --amend code.nephatrine.net/nephnet/i386:alpine-s6-previous --amend code.nephatrine.net/nephnet/arm64:alpine-s6-previous --amend code.nephatrine.net/nephnet/armv7:alpine-s6-previous
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6.2
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.18-3.1.6
@@ -923,11 +923,11 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6.2 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3 --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-latest --amend code.nephatrine.net/nephnet/i386:alpine-s6-latest --amend code.nephatrine.net/nephnet/arm64:alpine-s6-latest --amend code.nephatrine.net/nephnet/armv7:alpine-s6-latest
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6.2 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-latest --amend code.nephatrine.net/nephnet/i386:alpine-s6-latest --amend code.nephatrine.net/nephnet/arm64:alpine-s6-latest --amend code.nephatrine.net/nephnet/armv7:alpine-s6-latest
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-latest --amend code.nephatrine.net/nephnet/i386:alpine-s6-latest --amend code.nephatrine.net/nephnet/arm64:alpine-s6-latest --amend code.nephatrine.net/nephnet/armv7:alpine-s6-latest
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3.1 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-latest --amend code.nephatrine.net/nephnet/i386:alpine-s6-latest --amend code.nephatrine.net/nephnet/arm64:alpine-s6-latest --amend code.nephatrine.net/nephnet/armv7:alpine-s6-latest
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:3.19-3 --amend code.nephatrine.net/nephnet/amd64:alpine-s6-latest --amend code.nephatrine.net/nephnet/i386:alpine-s6-latest --amend code.nephatrine.net/nephnet/arm64:alpine-s6-latest --amend code.nephatrine.net/nephnet/armv7:alpine-s6-latest
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.19
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6.2
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:3.19-3.1.6
@@ -991,7 +991,7 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:latest --amend code.nephatrine.net/nephnet/alpine-s6-amd64:latest --amend code.nephatrine.net/nephnet/alpine-s6-i386:latest --amend code.nephatrine.net/nephnet/alpine-s6-arm64:latest --amend code.nephatrine.net/nephnet/alpine-s6-armv7:latest --amend code.nephatrine.net/nephnet/alpine-s6-riscv64:edge
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:latest --amend code.nephatrine.net/nephnet/amd64:alpine-s6-latest --amend code.nephatrine.net/nephnet/i386:alpine-s6-latest --amend code.nephatrine.net/nephnet/arm64:alpine-s6-latest --amend code.nephatrine.net/nephnet/armv7:alpine-s6-latest --amend code.nephatrine.net/nephnet/riscv64:alpine-s6-edge
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:latest
   push_combination:
     needs: [push_latest_amd64, push_latest_i386, push_latest_arm64, push_latest_armhf, push_edge_riscv64]
@@ -1021,7 +1021,7 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/alpine-s6:edge --amend code.nephatrine.net/nephnet/alpine-s6-amd64:edge --amend code.nephatrine.net/nephnet/alpine-s6-i386:edge --amend code.nephatrine.net/nephnet/alpine-s6-arm64:edge --amend code.nephatrine.net/nephnet/alpine-s6-armv7:edge --amend code.nephatrine.net/nephnet/alpine-s6-riscv64:edge
+          docker manifest create code.nephatrine.net/nephnet/alpine-s6:edge --amend code.nephatrine.net/nephnet/amd64:alpine-s6-edge --amend code.nephatrine.net/nephnet/i386:alpine-s6-edge --amend code.nephatrine.net/nephnet/arm64:alpine-s6-edge --amend code.nephatrine.net/nephnet/armv7:alpine-s6-edge --amend code.nephatrine.net/nephnet/riscv64:alpine-s6-edge
           docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:edge
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
