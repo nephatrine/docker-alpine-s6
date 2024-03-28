@@ -1050,15 +1050,7 @@ jobs:
       - name: Docker Manifest
         run: |
           docker manifest create nephatrine/alpine-s6:edge --amend nephatrine/amd64:alpine-s6-edge --amend nephatrine/ia32:alpine-s6-edge --amend nephatrine/arm64:alpine-s6-edge --amend nephatrine/armv7:alpine-s6-edge --amend nephatrine/riscv64:alpine-s6-edge
-          docker manifest create nephatrine/alpine-s6:edge-3.1.6.2 --amend nephatrine/amd64:alpine-s6-edge --amend nephatrine/ia32:alpine-s6-edge --amend nephatrine/arm64:alpine-s6-edge --amend nephatrine/armv7:alpine-s6-edge --amend nephatrine/riscv64:alpine-s6-edge
-          docker manifest create nephatrine/alpine-s6:edge-3.1.6 --amend nephatrine/amd64:alpine-s6-edge --amend nephatrine/ia32:alpine-s6-edge --amend nephatrine/arm64:alpine-s6-edge --amend nephatrine/armv7:alpine-s6-edge --amend nephatrine/riscv64:alpine-s6-edge
-          docker manifest create nephatrine/alpine-s6:edge-3.1 --amend nephatrine/amd64:alpine-s6-edge --amend nephatrine/ia32:alpine-s6-edge --amend nephatrine/arm64:alpine-s6-edge --amend nephatrine/armv7:alpine-s6-edge --amend nephatrine/riscv64:alpine-s6-edge
-          docker manifest create nephatrine/alpine-s6:edge-3 --amend nephatrine/amd64:alpine-s6-edge --amend nephatrine/ia32:alpine-s6-edge --amend nephatrine/arm64:alpine-s6-edge --amend nephatrine/armv7:alpine-s6-edge --amend nephatrine/riscv64:alpine-s6-edge
           docker manifest push --purge nephatrine/alpine-s6:edge
-          docker manifest push --purge nephatrine/alpine-s6:edge-3.1.6.2
-          docker manifest push --purge nephatrine/alpine-s6:edge-3.1.6
-          docker manifest push --purge nephatrine/alpine-s6:edge-3.1
-          docker manifest push --purge nephatrine/alpine-s6:edge-3
       - name: Notify Discord
         if: gitea.event_name != 'schedule' || steps.checkbase.outputs.needs-updating == 'true'
         uses: https://github.com/sarisia/actions-status-discord@v1
