@@ -11,8 +11,8 @@ RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https:
  && sed -i 's~ $(TOOLCHAIN_PATH)/bin/$(ARCH)-gcc~~g' /root/s6-overlay/mk/skaware.mk /root/s6-overlay/mk/bearssl.mk \
  && sed -i 's~ $(TOOLCHAIN_PATH)/bin:~~g' /root/s6-overlay/mk/skaware.mk /root/s6-overlay/mk/bearssl.mk \
  && sed -i 's~include mk/toolchain.mk~~g' /root/s6-overlay/Makefile
+WORKDIR /root/s6-overlay
 
-# hadolint ignore=DL3003
 RUN echo "====== COMPILE S6-OVERLAY ======" \
  && ARCH_TRIPLET="$(uname -m)-alpine-linux-musl" \
  && if [ "$(uname -m)" = "i686" ]; then ARCH_TRIPLET="i586-alpine-linux-musl"; fi \
@@ -22,11 +22,12 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
  && ln -s ar "/usr/bin/${ARCH_TRIPLET}-ar" \
  && ln -s ranlib "/usr/bin/${ARCH_TRIPLET}-ranlib" \
  && ln -s strip "/usr/bin/${ARCH_TRIPLET}-strip" \
- && cd /root/s6-overlay \
  && make ARCH="${ARCH_TRIPLET}" rootfs-overlay-arch rootfs-overlay-noarch \
  && make ARCH="${ARCH_TRIPLET}" -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) symlinks-overlay-arch symlinks-overlay-noarch \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) syslogd-overlay-noarch \
  && mv "/root/s6-overlay/output/rootfs-overlay-${ARCH_TRIPLET}" /root/s6-overlay/output/rootfs-overlay-arch
+
+# ------------------------------
 
 FROM alpine:edge
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
