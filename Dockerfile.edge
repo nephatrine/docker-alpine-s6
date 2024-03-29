@@ -38,7 +38,8 @@ RUN echo "====== INSTALL PACKAGES ======" \
   bash ca-certificates coreutils logrotate openssl shadow tzdata \
  && rm -f /etc/logrotate.d/acpid \
  && mkdir -p /mnt/config \
- && useradd -u 1000 -g users -d /mnt/config/home -s /sbin/nologin guardian
+ && useradd -u 1000 -g users -d /mnt/config/home -s /sbin/nologin guardian \
+ && rm -rf /tmp/* /var/tmp/*
 
 ENV \
  HOME="/root" \
