@@ -58,7 +58,7 @@ jobs:
   push_previous_amd64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_previous_amd64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -122,7 +122,7 @@ jobs:
   push_previous_i386:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_previous_i386]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -186,7 +186,7 @@ jobs:
   push_previous_arm64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_previous_arm64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -250,7 +250,7 @@ jobs:
   push_previous_armhf:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_previous_armhf]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -314,7 +314,7 @@ jobs:
   push_latest_amd64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_latest_amd64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -378,7 +378,7 @@ jobs:
   push_latest_i386:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_latest_i386]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -442,7 +442,7 @@ jobs:
   push_latest_arm64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_latest_arm64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -506,7 +506,7 @@ jobs:
   push_latest_armhf:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_latest_armhf]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -570,7 +570,7 @@ jobs:
   push_edge_amd64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_edge_amd64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -634,7 +634,7 @@ jobs:
   push_edge_arm64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_edge_arm64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
@@ -698,7 +698,7 @@ jobs:
   push_edge_riscv64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_edge_riscv64]
-    runs-on: nephnet-amd64
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Docker Login
