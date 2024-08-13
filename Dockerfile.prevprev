@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: ISC
 
-FROM code.nephatrine.net/nephnet/nxb-alpine:3.19 AS builder
+FROM code.nephatrine.net/nephnet/nxb-alpine:3.18 AS builder
 
 ARG S6_OVERLAY_VERSION=v3.1.6.2
 # hadolint ignore=SC2016
@@ -29,7 +29,7 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
 
 # ------------------------------
 
-FROM alpine:3.19
+FROM alpine:3.18
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 # hadolint ignore=DL3018

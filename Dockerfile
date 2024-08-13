@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: ISC
 
-FROM code.nephatrine.net/nephnet/nxb-alpine:3.19 AS builder
+FROM code.nephatrine.net/nephnet/nxb-alpine:3.20 AS builder
 
-ARG S6_OVERLAY_VERSION=v3.1.6.2
+ARG S6_OVERLAY_VERSION=v3.2.0.0
 # hadolint ignore=SC2016
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git \
  && sed -i 's~=$(TOOLCHAIN_PATH)/bin/$(ARCH)-~=/usr/bin/$(ARCH)-~g' /root/s6-overlay/mk/bearssl.mk \
@@ -29,7 +29,7 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
 
 # ------------------------------
 
-FROM alpine:3.19
+FROM alpine:3.20
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 # hadolint ignore=DL3018
