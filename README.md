@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2019 - 2023 Daniel Wolf <nephatrine@gmail.com>
+SPDX-FileCopyrightText: 2019 - 2024 Daniel Wolf <nephatrine@gmail.com>
 
 SPDX-License-Identifier: ISC
 -->
@@ -14,7 +14,7 @@ This docker base image contains Alpine Linux with the Skarnet S6 supervisor,
 and the S6 overlay installed. It has no function on its own and is intended
 to be used as a base for other docker images.
 
-The `latest` tag points to `alpine:latest` and s6-overlay `3.1.6.2`. This is
+The `latest` tag points to `alpine:3.20` and s6-overlay `3.2.0.0`. This is
 the only image actively being updated. There are tags for older versions, but
 these may no longer be using the latest Alpine version and packages.
 
