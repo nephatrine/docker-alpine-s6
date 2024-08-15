@@ -1328,7 +1328,7 @@ jobs:
           nodetail: true
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   update_readme:
-    needs: [push_previous, push_latest, push_edge]
+    needs: [push_prevprev, push_previous, push_latest, push_edge]
     runs-on: nephnet
     continue-on-error: true
     steps:
