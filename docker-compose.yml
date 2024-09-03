@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
 services:
-  act_runner:
+  alpine:
     build: .
     container_name: alpine
     environment:
