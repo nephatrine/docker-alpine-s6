@@ -5,9 +5,6 @@
 name: Build Container Image
 run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_name }}
 on:
-  push:
-    branches:
-      - 'master'
   schedule:
     - cron:  '0 8 * * 1'
 jobs:
