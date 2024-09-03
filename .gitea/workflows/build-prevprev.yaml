@@ -86,7 +86,6 @@ jobs:
         if: steps.dhlogin.outcome != 'success'
         run: sleep 60
       - name: Retry DockerHub Login (Push)
-        continue-on-error: true
         if: steps.dhlogin.outcome != 'success'
         uses: https://code.nephatrine.net/NephHub/login-action@v3
         with:
@@ -177,7 +176,6 @@ jobs:
         if: steps.dhlogin.outcome != 'success'
         run: sleep 60
       - name: Retry DockerHub Login (Push)
-        continue-on-error: true
         if: steps.dhlogin.outcome != 'success'
         uses: https://code.nephatrine.net/NephHub/login-action@v3
         with:
@@ -268,7 +266,6 @@ jobs:
         if: steps.dhlogin.outcome != 'success'
         run: sleep 60
       - name: Retry DockerHub Login (Push)
-        continue-on-error: true
         if: steps.dhlogin.outcome != 'success'
         uses: https://code.nephatrine.net/NephHub/login-action@v3
         with:
@@ -359,7 +356,6 @@ jobs:
         if: steps.dhlogin.outcome != 'success'
         run: sleep 60
       - name: Retry DockerHub Login (Push)
-        continue-on-error: true
         if: steps.dhlogin.outcome != 'success'
         uses: https://code.nephatrine.net/NephHub/login-action@v3
         with:
@@ -431,7 +427,6 @@ jobs:
         if: steps.dhlogin.outcome != 'success'
         run: sleep 60
       - name: Retry DockerHub Login (Push)
-        continue-on-error: true
         if: steps.dhlogin.outcome != 'success'
         uses: https://code.nephatrine.net/NephHub/login-action@v3
         with:
