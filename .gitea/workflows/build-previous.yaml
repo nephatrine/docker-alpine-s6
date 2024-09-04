@@ -370,7 +370,7 @@ jobs:
           docker rmi nephatrine/armv7:alpine-s6-previous
   build_previous:
     needs: [build_previous_amd64, build_previous_i386, build_previous_arm64, build_previous_armhf]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: NephCode Login (Push)
@@ -413,7 +413,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push_previous:
     needs: [push_previous_amd64, push_previous_i386, push_previous_arm64, push_previous_armhf]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: DockerHub Login (Push)

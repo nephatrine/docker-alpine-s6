@@ -150,7 +150,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile
+          file: Dockerfile.edge
           tags: code.nephatrine.net/nephhub/ia32:alpine-s6-edge
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-edge
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-edge,mode=max
@@ -330,7 +330,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile
+          file: Dockerfile.edge
           tags: code.nephatrine.net/nephhub/arm32:alpine-s6-edge
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-edge
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-edge,mode=max
@@ -460,7 +460,7 @@ jobs:
           docker rmi nephatrine/riscv64:alpine-s6-edge
   build_edge:
     needs: [build_edge_amd64, build_edge_i386, build_edge_arm64, build_edge_armhf, build_edge_riscv64]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: NephCode Login (Push)
@@ -503,7 +503,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push_edge:
     needs: [push_edge_amd64, push_edge_i386, push_edge_arm64, push_edge_armhf, push_edge_riscv64]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: DockerHub Login (Push)

@@ -464,7 +464,7 @@ jobs:
           docker rmi nephatrine/riscv64:alpine-s6-latest
   build_latest:
     needs: [build_latest_amd64, build_latest_i386, build_latest_arm64, build_latest_armhf, build_latest_riscv64]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: NephCode Login (Push)
@@ -508,7 +508,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push_latest:
     needs: [push_latest_amd64, push_latest_i386, push_latest_arm64, push_latest_armhf, push_latest_riscv64]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: DockerHub Login (Push)
@@ -550,7 +550,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   update_readme:
     needs: [push_latest]
-    runs-on: nephnet
+    runs-on: nephnet-fast
     continue-on-error: true
     steps:
       - name: Checkout Repository
