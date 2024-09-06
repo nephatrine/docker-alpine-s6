@@ -69,7 +69,7 @@ jobs:
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-latest,mode=max
       - name: Notify Discord
         continue-on-error: true
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure() || gitea.event_name != 'schedule'
         with:
           title: "Container Build (X86_64; 3.20)"
@@ -159,7 +159,7 @@ jobs:
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-latest
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-latest,mode=max
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
           title: "Container Build (I686; 3.20)"
@@ -249,7 +249,7 @@ jobs:
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-latest
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-latest,mode=max
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
           title: "Container Build (AARCH64; 3.20)"
@@ -339,7 +339,7 @@ jobs:
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-latest
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-latest,mode=max
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
           title: "Container Build (ARMV7L; 3.20)"
@@ -429,7 +429,7 @@ jobs:
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/riscv64-cache:alpine-s6-latest
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/riscv64-cache:alpine-s6-latest,mode=max
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
           title: "Container Build (RISCV64; 3.20)"
@@ -501,7 +501,7 @@ jobs:
           for manifestName in 3.20-3.2.0.0 3.20-3.2.0 3.20-3.2 3.20-3 3.20 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Notify Discord
         continue-on-error: true
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure() || gitea.event_name != 'schedule'
         with:
           title: "Container Publish (3.20)"
@@ -542,9 +542,8 @@ jobs:
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6-latest --amend nephatrine/ia32:alpine-s6-latest --amend nephatrine/arm64:alpine-s6-latest --amend nephatrine/armv7:alpine-s6-latest --amend nephatrine/riscv64:alpine-s6-latest"
           for manifestName in 3.20-3.2.0.0 3.20-3.2.0 3.20-3.2 3.20-3 3.20 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Notify Discord
-        continue-on-error: true
-        uses: https://github.com/sarisia/actions-status-discord@v1
-        if: failure() || gitea.event_name != 'schedule'
+        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
+        if: failure()
         with:
           title: "DockerHub Publish (3.20)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
