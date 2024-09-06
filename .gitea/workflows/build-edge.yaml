@@ -98,6 +98,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/amd64:alpine-s6-edge
           docker push nephatrine/amd64:alpine-s6-edge
           docker rmi nephatrine/amd64:alpine-s6-edge
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/amd64:alpine-s6-edge
   build_edge_i386:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-i386
@@ -188,6 +191,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/ia32:alpine-s6-edge
           docker push nephatrine/ia32:alpine-s6-edge
           docker rmi nephatrine/ia32:alpine-s6-edge
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/ia32:alpine-s6-edge
   build_edge_arm64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-arm64
@@ -278,6 +284,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm64:alpine-s6-edge
           docker push nephatrine/arm64:alpine-s6-edge
           docker rmi nephatrine/arm64:alpine-s6-edge
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/arm64:alpine-s6-edge
   build_edge_armhf:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-armhf
@@ -368,6 +377,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm32:alpine-s6-edge
           docker push nephatrine/armv7:alpine-s6-edge
           docker rmi nephatrine/armv7:alpine-s6-edge
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/armv7:alpine-s6-edge
   build_edge_riscv64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-riscv64
@@ -458,6 +470,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/riscv64:alpine-s6-edge
           docker push nephatrine/riscv64:alpine-s6-edge
           docker rmi nephatrine/riscv64:alpine-s6-edge
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/riscv64:alpine-s6-edge
   build_edge:
     needs: [build_edge_amd64, build_edge_i386, build_edge_arm64, build_edge_armhf, build_edge_riscv64]
     runs-on: nephnet-fast

@@ -98,6 +98,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/amd64:alpine-s6-prevprev
           docker push nephatrine/amd64:alpine-s6-prevprev
           docker rmi nephatrine/amd64:alpine-s6-prevprev
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/amd64:alpine-s6-prevprev
   build_prevprev_i386:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-i386
@@ -188,6 +191,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/ia32:alpine-s6-prevprev
           docker push nephatrine/ia32:alpine-s6-prevprev
           docker rmi nephatrine/ia32:alpine-s6-prevprev
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/ia32:alpine-s6-prevprev
   build_prevprev_arm64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-arm64
@@ -278,6 +284,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm64:alpine-s6-prevprev
           docker push nephatrine/arm64:alpine-s6-prevprev
           docker rmi nephatrine/arm64:alpine-s6-prevprev
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/arm64:alpine-s6-prevprev
   build_prevprev_armhf:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-armhf
@@ -368,6 +377,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm32:alpine-s6-prevprev
           docker push nephatrine/armv7:alpine-s6-prevprev
           docker rmi nephatrine/armv7:alpine-s6-prevprev
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/armv7:alpine-s6-prevprev
   build_prevprev:
     needs: [build_prevprev_amd64, build_prevprev_i386, build_prevprev_arm64, build_prevprev_armhf]
     runs-on: nephnet-fast

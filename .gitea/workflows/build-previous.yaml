@@ -98,6 +98,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/amd64:alpine-s6-previous
           docker push nephatrine/amd64:alpine-s6-previous
           docker rmi nephatrine/amd64:alpine-s6-previous
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/amd64:alpine-s6-previous
   build_previous_i386:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-i386
@@ -188,6 +191,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/ia32:alpine-s6-previous
           docker push nephatrine/ia32:alpine-s6-previous
           docker rmi nephatrine/ia32:alpine-s6-previous
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/ia32:alpine-s6-previous
   build_previous_arm64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-arm64
@@ -278,6 +284,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm64:alpine-s6-previous
           docker push nephatrine/arm64:alpine-s6-previous
           docker rmi nephatrine/arm64:alpine-s6-previous
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/arm64:alpine-s6-previous
   build_previous_armhf:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-armhf
@@ -368,6 +377,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm32:alpine-s6-previous
           docker push nephatrine/armv7:alpine-s6-previous
           docker rmi nephatrine/armv7:alpine-s6-previous
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/armv7:alpine-s6-previous
   build_previous:
     needs: [build_previous_amd64, build_previous_i386, build_previous_arm64, build_previous_armhf]
     runs-on: nephnet-fast

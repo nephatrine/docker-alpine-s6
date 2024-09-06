@@ -95,25 +95,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
-      - name: Build & Push
-        uses: https://code.nephatrine.net/NephHub/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64
-          provenance: mode=max
-          sbom: true
-          pull: true
-          push: true
-          file: Dockerfile
-          tags: nephatrine/amd64:alpine-s6-latest
-          cache-from: type=registry,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-latest
-      - name: Notify Discord
-        continue-on-error: true
-        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
+      - name: Tag & Push
+        run: |
+          docker pull code.nephatrine.net/nephhub/amd64:alpine-s6-latest --platform linux/amd64
+          docker tag code.nephatrine.net/nephhub/amd64:alpine-s6-latest nephatrine/amd64:alpine-s6-latest
+          docker rmi code.nephatrine.net/nephhub/amd64:alpine-s6-latest
+          docker push nephatrine/amd64:alpine-s6-latest
+          docker rmi nephatrine/amd64:alpine-s6-latest
+      - name: Clean Up
         if: failure()
-        with:
-          title: "DockerHub Build (X86_64; 3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+        run: docker rmi nephatrine/amd64:alpine-s6-latest
   build_latest_i386:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-i386
@@ -204,6 +195,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/ia32:alpine-s6-latest
           docker push nephatrine/ia32:alpine-s6-latest
           docker rmi nephatrine/ia32:alpine-s6-latest
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/ia32:alpine-s6-latest
   build_latest_arm64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-arm64
@@ -294,6 +288,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm64:alpine-s6-latest
           docker push nephatrine/arm64:alpine-s6-latest
           docker rmi nephatrine/arm64:alpine-s6-latest
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/arm64:alpine-s6-latest
   build_latest_armhf:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-armhf
@@ -384,6 +381,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/arm32:alpine-s6-latest
           docker push nephatrine/armv7:alpine-s6-latest
           docker rmi nephatrine/armv7:alpine-s6-latest
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/armv7:alpine-s6-latest
   build_latest_riscv64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
     runs-on: nephnet-riscv64
@@ -474,6 +474,9 @@ jobs:
           docker rmi code.nephatrine.net/nephhub/riscv64:alpine-s6-latest
           docker push nephatrine/riscv64:alpine-s6-latest
           docker rmi nephatrine/riscv64:alpine-s6-latest
+      - name: Clean Up
+        if: failure()
+        run: docker rmi nephatrine/riscv64:alpine-s6-latest
   build_latest:
     needs: [build_latest_amd64, build_latest_i386, build_latest_arm64, build_latest_armhf, build_latest_riscv64]
     runs-on: nephnet-fast
