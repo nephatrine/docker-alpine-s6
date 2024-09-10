@@ -62,7 +62,7 @@ WORKDIR /etc/apk/keys
 RUN DISTRO_VERSION="$(grep /main /etc/apk/repositories | tr '/' ' ' | awk '{print $(NF-1)}' | head -1)" \
  && export DISTRO_VERSION \
  && if curl --output /dev/null --silent --fail -r 0-0 "https://code.nephatrine.net/api/packages/nephatrine/alpine/${DISTRO_VERSION}/main/$(cat /etc/apk/arch)/APKINDEX.tar.gz"; then echo "Installing Nephatrine" \
-  && curl -JO https://code.nephatrine.net/api/packages/nephatrine/alpine/key \
+  && curl -JO https://code.nephatrine.net/api/packages/nephatrine/alpine/key && mv nephatrine*.pub /etc/apk/keys/ \
   && echo "https://code.nephatrine.net/api/packages/nephatrine/alpine/${DISTRO_VERSION}/main" >>/etc/apk/repositories \
   && apk update; fi \
  && rm -rf /tmp/* /var/tmp/*
