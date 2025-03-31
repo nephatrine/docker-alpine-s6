@@ -1,10 +1,10 @@
-# SPDX-FileCopyrightText: 2019 - 2024 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2019 - 2025 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
 FROM code.nephatrine.net/nephnet/nxb-alpine:edge AS builder
 
-ARG S6_OVERLAY_VERSION=v3.2.0.0
+ARG S6_OVERLAY_VERSION=v3.2.0.2
 # hadolint ignore=SC2016
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git \
  && sed -i 's~=$(TOOLCHAIN_PATH)/bin/$(ARCH)-~=/usr/bin/$(ARCH)-~g' /root/s6-overlay/mk/bearssl.mk \

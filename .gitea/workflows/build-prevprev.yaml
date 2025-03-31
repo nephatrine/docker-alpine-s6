@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2023 - 2025 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
@@ -60,7 +60,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.prevprev
+          file: Dockerfile.319
           tags: code.nephatrine.net/nephhub/amd64:alpine-s6-prevprev
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-prevprev
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-prevprev,mode=max
@@ -68,7 +68,7 @@ jobs:
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (X86_64; 3.18)"
+          title: "Container Build (X86_64; 3.19)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_prevprev_amd64:
     needs: [build_prevprev_amd64]
@@ -153,7 +153,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.prevprev
+          file: Dockerfile.319
           tags: code.nephatrine.net/nephhub/ia32:alpine-s6-prevprev
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-prevprev
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-prevprev,mode=max
@@ -161,7 +161,7 @@ jobs:
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (I686; 3.18)"
+          title: "Container Build (I686; 3.19)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_prevprev_i386:
     needs: [build_prevprev_i386]
@@ -246,7 +246,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.prevprev
+          file: Dockerfile.319
           tags: code.nephatrine.net/nephhub/arm64:alpine-s6-prevprev
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-prevprev
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-prevprev,mode=max
@@ -254,7 +254,7 @@ jobs:
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (AARCH64; 3.18)"
+          title: "Container Build (AARCH64; 3.19)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_prevprev_arm64:
     needs: [build_prevprev_arm64]
@@ -339,7 +339,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.prevprev
+          file: Dockerfile.319
           tags: code.nephatrine.net/nephhub/arm32:alpine-s6-prevprev
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-prevprev
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-prevprev,mode=max
@@ -347,7 +347,7 @@ jobs:
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (ARMV7L; 3.18)"
+          title: "Container Build (ARMV7L; 3.19)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_prevprev_armhf:
     needs: [build_prevprev_armhf]
@@ -408,7 +408,7 @@ jobs:
         id: manifest
         run: |
           export IMAGELIST="--amend code.nephatrine.net/nephhub/amd64:alpine-s6-prevprev --amend code.nephatrine.net/nephhub/ia32:alpine-s6-prevprev --amend code.nephatrine.net/nephhub/arm64:alpine-s6-prevprev --amend code.nephatrine.net/nephhub/arm32:alpine-s6-prevprev"
-          for manifestName in 3.18-3.1.6.2 3.18-3.1.6 3.18-3.1 3.18-3 3.18; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          for manifestName in 3.19-3.1.6.2 3.19-3.1.6 3.19-3.1 3.19-3 3.19; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
@@ -416,12 +416,12 @@ jobs:
         if: steps.manifest.outcome != 'success'
         run: |
           export IMAGELIST="--amend code.nephatrine.net/nephhub/amd64:alpine-s6-prevprev --amend code.nephatrine.net/nephhub/ia32:alpine-s6-prevprev --amend code.nephatrine.net/nephhub/arm64:alpine-s6-prevprev --amend code.nephatrine.net/nephhub/arm32:alpine-s6-prevprev"
-          for manifestName in 3.18-3.1.6.2 3.18-3.1.6 3.18-3.1 3.18-3 3.18; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          for manifestName in 3.19-3.1.6.2 3.19-3.1.6 3.19-3.1 3.19-3 3.19; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Publish (3.18)"
+          title: "Container Publish (3.19)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push_prevprev:
     needs: [push_prevprev_amd64, push_prevprev_i386, push_prevprev_arm64, push_prevprev_armhf]
@@ -449,7 +449,7 @@ jobs:
         id: manifest
         run: |
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6-prevprev --amend nephatrine/ia32:alpine-s6-prevprev --amend nephatrine/arm64:alpine-s6-prevprev --amend nephatrine/armv7:alpine-s6-prevprev"
-          for manifestName in 3.18-3.1.6.2 3.18-3.1.6 3.18-3.1 3.18-3 3.18; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          for manifestName in 3.19-3.1.6.2 3.19-3.1.6 3.19-3.1 3.19-3 3.19; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
@@ -457,10 +457,10 @@ jobs:
         if: steps.manifest.outcome != 'success'
         run: |
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6-prevprev --amend nephatrine/ia32:alpine-s6-prevprev --amend nephatrine/arm64:alpine-s6-prevprev --amend nephatrine/armv7:alpine-s6-prevprev"
-          for manifestName in 3.18-3.1.6.2 3.18-3.1.6 3.18-3.1 3.18-3 3.18; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          for manifestName in 3.19-3.1.6.2 3.19-3.1.6 3.19-3.1 3.19-3 3.19; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "DockerHub Publish (3.18)"
+          title: "DockerHub Publish (3.19)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
