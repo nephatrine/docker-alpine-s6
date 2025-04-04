@@ -60,7 +60,8 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
-          provenance: false
+          provenance: mode=max
+          sbom: true
           pull: true
           push: true
           file: Dockerfile
@@ -154,7 +155,8 @@ jobs:
         with:
           context: .
           platforms: linux/386
-          provenance: false
+          provenance: mode=max
+          sbom: true
           pull: true
           push: true
           file: Dockerfile
@@ -247,7 +249,8 @@ jobs:
         with:
           context: .
           platforms: linux/arm64/v8
-          provenance: false
+          provenance: mode=max
+          sbom: true
           pull: true
           push: true
           file: Dockerfile
@@ -340,7 +343,8 @@ jobs:
         with:
           context: .
           platforms: linux/arm/v7
-          provenance: false
+          provenance: mode=max
+          sbom: true
           pull: true
           push: true
           file: Dockerfile
@@ -433,7 +437,8 @@ jobs:
         with:
           context: .
           platforms: linux/riscv64
-          provenance: false
+          provenance: mode=max
+          sbom: true
           pull: true
           push: true
           file: Dockerfile
