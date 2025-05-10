@@ -5,34 +5,35 @@ name: Build Container Image
 run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_name }}
 on:
   schedule:
-    - cron: "0 8 * * 3"
+    - cron: "TZ=America/New_York 0 8 * * 3"
 jobs:
-  build_previous_amd64:
-    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
-    runs-on: nephnet-amd64
+  build_images:
+    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs') || startsWith(gitea.event.head_commit.message, 'style')) || gitea.event_name == 'schedule')
+    strategy:
+      matrix:
+        include:
+          - runner: amd64
+            platform: amd64
+            nephhub: amd64
+          - runner: arm64
+            platform: arm64/v8
+            nephhub: arm64
+          - runner: armhf
+            platform: arm/v7
+            nephhub: arm32
+          - runner: i386
+            platform: 386
+            nephhub: ia32
+          - runner: riscv64
+            platform: riscv64
+            nephhub: riscv64
+    runs-on: nephnet-${{matrix.runner}}
     continue-on-error: true
     steps:
       - name: Checkout Repository
         uses: https://code.nephatrine.net/NephHub/checkout@v4
       - name: BuildX Setup
         uses: https://code.nephatrine.net/NephHub/setup-buildx-action@v3
-      - name: DockerHub Login (Pull Limit)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Pull Limit)
-        continue-on-error: true
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
       - name: NephCode Login (Push)
         continue-on-error: true
         id: nclogin
@@ -55,22 +56,40 @@ jobs:
         uses: https://code.nephatrine.net/NephHub/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          platforms: linux/${{matrix.platform}}
           provenance: false
           pull: true
           push: true
           file: Dockerfile.v320
-          tags: code.nephatrine.net/nephhub/amd64:alpine-s6-previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-previous
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-previous,mode=max
+          tags: code.nephatrine.net/nephnet/alpine-s6:3.20-${{matrix.nephhub}}
+          cache-from: type=registry,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:alpine-s6-3.20
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:alpine-s6-3.20,mode=max
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (X86_64; 3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  push_previous_amd64:
-    needs: [build_previous_amd64]
+          title: "FAIL: build_images (3.20; ${{matrix.platform}})"
+          webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
+  push_images:
+    needs: [build_images]
+    strategy:
+      matrix:
+        include:
+          - platform: amd64
+            nephhub: amd64
+            dockerhub: amd64
+          - platform: arm64/v8
+            nephhub: arm64
+            dockerhub: arm64
+          - platform: arm/v7
+            nephhub: arm32
+            dockerhub: armv7
+          - platform: 386
+            nephhub: ia32
+            dockerhub: ia32
+          - platform: riscv64
+            nephhub: riscv64
+            dockerhub: riscv64
     runs-on: nephnet-fast
     continue-on-error: true
     steps:
@@ -92,395 +111,22 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephhub/amd64:alpine-s6-previous --platform linux/amd64
-          docker tag code.nephatrine.net/nephhub/amd64:alpine-s6-previous nephatrine/amd64:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephhub/amd64:alpine-s6-previous
-          docker push nephatrine/amd64:alpine-s6-previous
-          docker rmi nephatrine/amd64:alpine-s6-previous
+          docker pull code.nephatrine.net/nephnet/alpine-s6:3.20-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
+          docker tag code.nephatrine.net/nephnet/alpine-s6:3.20-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:alpine-s6-3.20
+          docker rmi code.nephatrine.net/nephnet/alpine-s6:3.20-${{matrix.nephhub}}
+          docker push nephatrine/${{matrix.dockerhub}}:alpine-s6-3.20
+          docker rmi nephatrine/${{matrix.dockerhub}}:alpine-s6-3.20
       - name: Clean Up
         if: failure()
-        run: docker rmi nephatrine/amd64:alpine-s6-previous
-  build_previous_i386:
-    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
-    runs-on: nephnet-i386
-    continue-on-error: true
-    steps:
-      - name: Checkout Repository
-        uses: https://code.nephatrine.net/NephHub/checkout@v4
-      - name: BuildX Setup
-        uses: https://code.nephatrine.net/NephHub/setup-buildx-action@v3
-      - name: DockerHub Login (Pull Limit)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Pull Limit)
-        continue-on-error: true
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: NephCode Login (Push)
-        continue-on-error: true
-        id: nclogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Wait to Retry
-        if: steps.nclogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry NephCode Login (Push)
-        if: steps.nclogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Build & Push
-        uses: https://code.nephatrine.net/NephHub/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/386
-          provenance: false
-          pull: true
-          push: true
-          file: Dockerfile.v320
-          tags: code.nephatrine.net/nephhub/ia32:alpine-s6-previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-previous
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-previous,mode=max
+        run: docker rmi nephatrine/${{matrix.dockerhub}}:alpine-s6-3.20
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (I686; 3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  push_previous_i386:
-    needs: [build_previous_i386]
-    runs-on: nephnet-fast
-    continue-on-error: true
-    steps:
-      - name: DockerHub Login (Push)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Push)
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Tag & Push
-        run: |
-          docker pull code.nephatrine.net/nephhub/ia32:alpine-s6-previous --platform linux/386
-          docker tag code.nephatrine.net/nephhub/ia32:alpine-s6-previous nephatrine/ia32:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephhub/ia32:alpine-s6-previous
-          docker push nephatrine/ia32:alpine-s6-previous
-          docker rmi nephatrine/ia32:alpine-s6-previous
-      - name: Clean Up
-        if: failure()
-        run: docker rmi nephatrine/ia32:alpine-s6-previous
-  build_previous_arm64:
-    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
-    runs-on: nephnet-arm64
-    continue-on-error: true
-    steps:
-      - name: Checkout Repository
-        uses: https://code.nephatrine.net/NephHub/checkout@v4
-      - name: BuildX Setup
-        uses: https://code.nephatrine.net/NephHub/setup-buildx-action@v3
-      - name: DockerHub Login (Pull Limit)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Pull Limit)
-        continue-on-error: true
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: NephCode Login (Push)
-        continue-on-error: true
-        id: nclogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Wait to Retry
-        if: steps.nclogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry NephCode Login (Push)
-        if: steps.nclogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Build & Push
-        uses: https://code.nephatrine.net/NephHub/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/arm64/v8
-          provenance: false
-          pull: true
-          push: true
-          file: Dockerfile.v320
-          tags: code.nephatrine.net/nephhub/arm64:alpine-s6-previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-previous
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-previous,mode=max
-      - name: Notify Discord
-        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
-        if: failure()
-        with:
-          title: "Container Build (AARCH64; 3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  push_previous_arm64:
-    needs: [build_previous_arm64]
-    runs-on: nephnet-fast
-    continue-on-error: true
-    steps:
-      - name: DockerHub Login (Push)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Push)
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Tag & Push
-        run: |
-          docker pull code.nephatrine.net/nephhub/arm64:alpine-s6-previous --platform linux/arm64/v8
-          docker tag code.nephatrine.net/nephhub/arm64:alpine-s6-previous nephatrine/arm64:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephhub/arm64:alpine-s6-previous
-          docker push nephatrine/arm64:alpine-s6-previous
-          docker rmi nephatrine/arm64:alpine-s6-previous
-      - name: Clean Up
-        if: failure()
-        run: docker rmi nephatrine/arm64:alpine-s6-previous
-  build_previous_armhf:
-    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
-    runs-on: nephnet-armhf
-    continue-on-error: true
-    steps:
-      - name: Checkout Repository
-        uses: https://code.nephatrine.net/NephHub/checkout@v4
-      - name: BuildX Setup
-        uses: https://code.nephatrine.net/NephHub/setup-buildx-action@v3
-      - name: DockerHub Login (Pull Limit)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Pull Limit)
-        continue-on-error: true
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: NephCode Login (Push)
-        continue-on-error: true
-        id: nclogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Wait to Retry
-        if: steps.nclogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry NephCode Login (Push)
-        if: steps.nclogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Build & Push
-        uses: https://code.nephatrine.net/NephHub/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/arm/v7
-          provenance: false
-          pull: true
-          push: true
-          file: Dockerfile.v320
-          tags: code.nephatrine.net/nephhub/arm32:alpine-s6-previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-previous
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-previous,mode=max
-      - name: Notify Discord
-        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
-        if: failure()
-        with:
-          title: "Container Build (ARMV7L; 3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  push_previous_armhf:
-    needs: [build_previous_armhf]
-    runs-on: nephnet-fast
-    continue-on-error: true
-    steps:
-      - name: DockerHub Login (Push)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Push)
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Tag & Push
-        run: |
-          docker pull code.nephatrine.net/nephhub/arm32:alpine-s6-previous --platform linux/arm/v7
-          docker tag code.nephatrine.net/nephhub/arm32:alpine-s6-previous nephatrine/armv7:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephhub/arm32:alpine-s6-previous
-          docker push nephatrine/armv7:alpine-s6-previous
-          docker rmi nephatrine/armv7:alpine-s6-previous
-      - name: Clean Up
-        if: failure()
-        run: docker rmi nephatrine/armv7:alpine-s6-previous
-  build_previous_riscv64:
-    if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
-    runs-on: nephnet-riscv64
-    continue-on-error: true
-    steps:
-      - name: Checkout Repository
-        uses: https://code.nephatrine.net/NephHub/checkout@v4
-      - name: BuildX Setup
-        uses: https://code.nephatrine.net/NephHub/setup-buildx-action@v3
-      - name: DockerHub Login (Pull Limit)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Pull Limit)
-        continue-on-error: true
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: NephCode Login (Push)
-        continue-on-error: true
-        id: nclogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Wait to Retry
-        if: steps.nclogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry NephCode Login (Push)
-        if: steps.nclogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Build & Push
-        uses: https://code.nephatrine.net/NephHub/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/riscv64
-          provenance: false
-          pull: true
-          push: true
-          file: Dockerfile.v320
-          tags: code.nephatrine.net/nephhub/riscv64:alpine-s6-previous
-          cache-from: type=registry,ref=code.nephatrine.net/nephhub/riscv64-cache:alpine-s6-previous
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/riscv64-cache:alpine-s6-previous,mode=max
-      - name: Notify Discord
-        uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
-        if: failure()
-        with:
-          title: "Container Build (RISCV64; 3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  push_previous_riscv64:
-    needs: [build_previous_riscv64]
-    runs-on: nephnet-fast
-    continue-on-error: true
-    steps:
-      - name: DockerHub Login (Push)
-        continue-on-error: true
-        id: dhlogin
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Wait to Retry
-        if: steps.dhlogin.outcome != 'success'
-        run: sleep 60
-      - name: Retry DockerHub Login (Push)
-        if: steps.dhlogin.outcome != 'success'
-        uses: https://code.nephatrine.net/NephHub/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Tag & Push
-        run: |
-          docker pull code.nephatrine.net/nephhub/riscv64:alpine-s6-previous --platform linux/riscv64
-          docker tag code.nephatrine.net/nephhub/riscv64:alpine-s6-previous nephatrine/riscv64:alpine-s6-previous
-          docker rmi code.nephatrine.net/nephhub/riscv64:alpine-s6-previous
-          docker push nephatrine/riscv64:alpine-s6-previous
-          docker rmi nephatrine/riscv64:alpine-s6-previous
-      - name: Clean Up
-        if: failure()
-        run: docker rmi nephatrine/riscv64:alpine-s6-previous
-  build_previous:
-    needs:
-      [
-        build_previous_amd64,
-        build_previous_i386,
-        build_previous_arm64,
-        build_previous_armhf,
-        build_previous_riscv64,
-      ]
+          title: "FAIL: push_images (3.20; ${{matrix.platform}})"
+          webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
+  build_manifest:
+    needs: [build_images]
     runs-on: nephnet-fast
     continue-on-error: true
     steps:
@@ -506,31 +152,24 @@ jobs:
         continue-on-error: true
         id: manifest
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephhub/amd64:alpine-s6-previous --amend code.nephatrine.net/nephhub/ia32:alpine-s6-previous --amend code.nephatrine.net/nephhub/arm64:alpine-s6-previous --amend code.nephatrine.net/nephhub/arm32:alpine-s6-previous --amend code.nephatrine.net/nephhub/riscv64:alpine-s6-previous"
-          for manifestName in 3.20-3.2.0.2 3.20-3.2.0 3.20-3.2 3.20-3 3.20; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.20-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-riscv64"
+          for manifestName in 3.20-3.2.0.2 3.20; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
       - name: Retry Docker Manifest
         if: steps.manifest.outcome != 'success'
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephhub/amd64:alpine-s6-previous --amend code.nephatrine.net/nephhub/ia32:alpine-s6-previous --amend code.nephatrine.net/nephhub/arm64:alpine-s6-previous --amend code.nephatrine.net/nephhub/arm32:alpine-s6-previous --amend code.nephatrine.net/nephhub/riscv64:alpine-s6-previous"
-          for manifestName in 3.20-3.2.0.2 3.20-3.2.0 3.20-3.2 3.20-3 3.20; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.20-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.20-riscv64"
+          for manifestName in 3.20-3.2.0.2 3.20; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Publish (3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
-  push_previous:
-    needs:
-      [
-        push_previous_amd64,
-        push_previous_i386,
-        push_previous_arm64,
-        push_previous_armhf,
-        push_previous_riscv64,
-      ]
+          title: "FAIL: build_manifest (3.20)"
+          webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
+  push_manifest:
+    needs: [push_images]
     runs-on: nephnet-fast
     continue-on-error: true
     steps:
@@ -554,19 +193,19 @@ jobs:
         continue-on-error: true
         id: manifest
         run: |
-          export IMAGELIST="--amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous --amend nephatrine/riscv64:alpine-s6-previous"
-          for manifestName in 3.20-3.2.0.2 3.20-3.2.0 3.20-3.2 3.20-3 3.20; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          export IMAGELIST="--amend nephatrine/amd64:alpine-s6-3.20 --amend nephatrine/ia32:alpine-s6-3.20 --amend nephatrine/arm64:alpine-s6-3.20 --amend nephatrine/armv7:alpine-s6-3.20 --amend nephatrine/riscv64:alpine-s6-3.20"
+          for manifestName in 3.20-3.2.0.2 3.20; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
       - name: Retry Docker Manifest
         if: steps.manifest.outcome != 'success'
         run: |
-          export IMAGELIST="--amend nephatrine/amd64:alpine-s6-previous --amend nephatrine/ia32:alpine-s6-previous --amend nephatrine/arm64:alpine-s6-previous --amend nephatrine/armv7:alpine-s6-previous --amend nephatrine/riscv64:alpine-s6-previous"
-          for manifestName in 3.20-3.2.0.2 3.20-3.2.0 3.20-3.2 3.20-3 3.20; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          export IMAGELIST="--amend nephatrine/amd64:alpine-s6-3.20 --amend nephatrine/ia32:alpine-s6-3.20 --amend nephatrine/arm64:alpine-s6-3.20 --amend nephatrine/armv7:alpine-s6-3.20 --amend nephatrine/riscv64:alpine-s6-3.20"
+          for manifestName in 3.20-3.2.0.2 3.20; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "DockerHub Publish (3.20)"
-          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
+          title: "FAIL: push_manifest (3.20)"
+          webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
