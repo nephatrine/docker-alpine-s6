@@ -5,8 +5,10 @@ SPDX-License-Identifier: ISC
 
 # Alpine S6-Overlay
 
-[![Git](https://img.shields.io/static/v1?label=Git&message=NephCode&color=teal)](https://code.nephatrine.net/NephNET/docker-alpine-s6)
-[![Registry](https://img.shields.io/static/v1?label=OCI&message=alpine-s6&color=blue)](https://code.nephatrine.net/NephNET/-/packages/container/alpine-s6/latest)
+[![NephCode](https://img.shields.io/static/v1?label=Git&message=NephCode&color=teal)](https://code.nephatrine.net/NephNET/docker-alpine-s6)
+[![GitHub](https://img.shields.io/static/v1?label=Git&message=GitHub&color=teal)](https://github.com/nephatrine/docker-alpine-s6)
+[![Registry](https://img.shields.io/static/v1?label=OCI&message=NephCode&color=blue)](https://code.nephatrine.net/NephNET/-/packages/container/alpine-s6/latest)
+[![DockerHub](https://img.shields.io/static/v1?label=OCI&message=DockerHub&color=blue)](https://code.nephatrine.net/NephNET/-/packages/container/alpine-s6/latest)
 [![unRAID](https://img.shields.io/static/v1?label=unRAID&message=template&color=orange)](https://code.nephatrine.net/NephNET/unraid-containers)
 
 This container image contains Alpine Linux with the Skarnet S6 supervisor, and
