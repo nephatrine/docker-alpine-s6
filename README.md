@@ -8,7 +8,7 @@ SPDX-License-Identifier: ISC
 [![NephCode](https://img.shields.io/static/v1?label=Git&message=NephCode&color=teal)](https://code.nephatrine.net/NephNET/docker-alpine-s6)
 [![GitHub](https://img.shields.io/static/v1?label=Git&message=GitHub&color=teal)](https://github.com/nephatrine/docker-alpine-s6)
 [![Registry](https://img.shields.io/static/v1?label=OCI&message=NephCode&color=blue)](https://code.nephatrine.net/NephNET/-/packages/container/alpine-s6/latest)
-[![DockerHub](https://img.shields.io/static/v1?label=OCI&message=DockerHub&color=blue)](https://code.nephatrine.net/NephNET/-/packages/container/alpine-s6/latest)
+[![DockerHub](https://img.shields.io/static/v1?label=OCI&message=DockerHub&color=blue)](https://hub.docker.com/repository/docker/nephatrine/alpine-s6/general)
 [![unRAID](https://img.shields.io/static/v1?label=unRAID&message=template&color=orange)](https://code.nephatrine.net/NephNET/unraid-containers)
 
 This container image contains Alpine Linux with the Skarnet S6 supervisor, and
@@ -24,10 +24,10 @@ purposes of keeping permissions sane on the mounted data volume.
 
 ## Supported Tags
 
-- `nxb-alpine:3.21-3.2.0.2`: Alpine 3.21 & s6-overlay 3.2.0.2
-- `nxb-alpine:3.20-3.2.0.2`: Alpine 3.20 & s6-overlay 3.2.0.2
-- `nxb-alpine:3.19-3.1.6.2`: Alpine 3.19 & s6-overlay 3.1.6.2
-- `nxb-alpine:3.18-3.2.0.2`: Alpine 3.18 & s6-overlay 3.1.6.2
+- `nxb-alpine:3.21-3.2.0.2`: Alpine 3.21 w/ s6-overlay 3.2.0.2
+- `nxb-alpine:3.20-3.2.0.2`: Alpine 3.20 w/ s6-overlay 3.2.0.2
+- `nxb-alpine:3.19-3.1.6.2`: Alpine 3.19 w/ s6-overlay 3.1.6.2
+- `nxb-alpine:3.18-3.1.6.2`: Alpine 3.18 w/ s6-overlay 3.1.6.2
 
 ## Software
 
