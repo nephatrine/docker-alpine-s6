@@ -1,7 +1,8 @@
 #!/command/execlineb
-# SPDX-FileCopyrightText: 2022 - 2024 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
+
+# shellcheck disable=all
 
 foreground {
   if -n { /usr/bin/test -d /mnt/config/etc/logrotate.d }

@@ -1,7 +1,9 @@
 #!/command/with-contenv /bin/sh
-# SPDX-FileCopyrightText: 2019 - 2024 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
+
+# shellcheck shell=sh
+# shellcheck disable=SC1091
 
 EXITVALUE=0
 
@@ -9,7 +11,7 @@ if [ ! -d /mnt/config/log ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
 fi
 if [ -f /mnt/config/etc/logrotate.conf ] && [ -d /mnt/config/log ]; then
-  cd /mnt/config/log
+  cd /mnt/config/log || exit 1
   /usr/bin/test -e /mnt/config/log/logrotate.status || /command/s6-setuidgid guardian /bin/touch /mnt/config/log/logrotate.status
   /usr/bin/head -1 /mnt/config/log/logrotate.status | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/log/logrotate.clean
   /bin/sed 's/"//g' /mnt/config/log/logrotate.status | while read -r logfile date; do

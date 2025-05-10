@@ -1,9 +1,8 @@
 #!/bin/sh
-# SPDX-FileCopyrightText: 2022 - 2024 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
-# Make Log Directory
+# shellcheck disable=SC2002
 
 if [ -f /mnt/config/log/crond.log ]; then
   /bin/chown guardian:users /mnt/config/log/crond.log
@@ -14,8 +13,6 @@ else
   /command/s6-setuidgid guardian /bin/touch /mnt/config/log/crond.log
 fi
 
-# Store Backup Crontabs
-
 if [ ! -d /etc/crontabs.default.d ]; then
   /bin/mkdir -p /etc/crontabs.default.d
   if [ -d /var/spool/cron/crontabs ]; then
@@ -23,13 +20,9 @@ if [ ! -d /etc/crontabs.default.d ]; then
   fi
 fi
 
-# Create Crontabs Location
-
 if [ ! -d /mnt/config/etc/crontabs ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/crontabs
 fi
-
-# Build Root Crontab
 
 export THISTAB="/mnt/config/etc/crontabs/root"
 
@@ -73,4 +66,4 @@ fi
 # Launch Cron
 
 /etc/periodic/15min/watcher-crond
-exec /usr/sbin/crond -L /mnt/config/log/crond.log -l 6 -f;
+exec /usr/sbin/crond -L /mnt/config/log/crond.log -l 6 -f

@@ -1,11 +1,10 @@
-# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
-#
-# SPDX-License-Identifier: ISC
+# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-License-Identifier: CC0-1.0
 
 services:
   alpine:
     build: .
-    container_name: alpine
+    container_name: alpine-s6
     environment:
       TZ: America/New_York
       PUID: 1000

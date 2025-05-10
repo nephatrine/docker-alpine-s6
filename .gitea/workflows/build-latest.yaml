@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: 2023 - 2025 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 name: Build Container Image
@@ -7,9 +6,9 @@ run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_nam
 on:
   push:
     branches:
-      - 'master'
+      - "master"
   schedule:
-    - cron:  '0 18 * * 2'
+    - cron: "0 18 * * 2"
 jobs:
   build_latest_amd64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
@@ -478,7 +477,14 @@ jobs:
         if: failure()
         run: docker rmi nephatrine/riscv64:alpine-s6-latest
   build_latest:
-    needs: [build_latest_amd64, build_latest_i386, build_latest_arm64, build_latest_armhf, build_latest_riscv64]
+    needs:
+      [
+        build_latest_amd64,
+        build_latest_i386,
+        build_latest_arm64,
+        build_latest_armhf,
+        build_latest_riscv64,
+      ]
     runs-on: nephnet-fast
     continue-on-error: true
     steps:
@@ -522,7 +528,14 @@ jobs:
           title: "Container Publish (3.21)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push_latest:
-    needs: [push_latest_amd64, push_latest_i386, push_latest_arm64, push_latest_armhf, push_latest_riscv64]
+    needs:
+      [
+        push_latest_amd64,
+        push_latest_i386,
+        push_latest_arm64,
+        push_latest_armhf,
+        push_latest_riscv64,
+      ]
     runs-on: nephnet-fast
     continue-on-error: true
     steps:

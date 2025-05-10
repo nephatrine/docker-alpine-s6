@@ -1,12 +1,11 @@
-# SPDX-FileCopyrightText: 2023 - 2025 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 name: Build Container Image
 run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_name }}
 on:
   schedule:
-    - cron:  '0 8 * * 3'
+    - cron: "0 8 * * 3"
 jobs:
   build_previous_amd64:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs')) || gitea.event_name == 'schedule')
@@ -60,7 +59,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.320
+          file: Dockerfile.v320
           tags: code.nephatrine.net/nephhub/amd64:alpine-s6-previous
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-previous
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/amd64-cache:alpine-s6-previous,mode=max
@@ -153,7 +152,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.320
+          file: Dockerfile.v320
           tags: code.nephatrine.net/nephhub/ia32:alpine-s6-previous
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-previous
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/ia32-cache:alpine-s6-previous,mode=max
@@ -246,7 +245,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.320
+          file: Dockerfile.v320
           tags: code.nephatrine.net/nephhub/arm64:alpine-s6-previous
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-previous
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm64-cache:alpine-s6-previous,mode=max
@@ -339,7 +338,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.320
+          file: Dockerfile.v320
           tags: code.nephatrine.net/nephhub/arm32:alpine-s6-previous
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-previous
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/arm32-cache:alpine-s6-previous,mode=max
@@ -432,7 +431,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.320
+          file: Dockerfile.v320
           tags: code.nephatrine.net/nephhub/riscv64:alpine-s6-previous
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/riscv64-cache:alpine-s6-previous
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/riscv64-cache:alpine-s6-previous,mode=max
@@ -474,7 +473,14 @@ jobs:
         if: failure()
         run: docker rmi nephatrine/riscv64:alpine-s6-previous
   build_previous:
-    needs: [build_previous_amd64, build_previous_i386, build_previous_arm64, build_previous_armhf, build_previous_riscv64]
+    needs:
+      [
+        build_previous_amd64,
+        build_previous_i386,
+        build_previous_arm64,
+        build_previous_armhf,
+        build_previous_riscv64,
+      ]
     runs-on: nephnet-fast
     continue-on-error: true
     steps:
@@ -517,7 +523,14 @@ jobs:
           title: "Container Publish (3.20)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push_previous:
-    needs: [push_previous_amd64, push_previous_i386, push_previous_arm64, push_previous_armhf, push_previous_riscv64]
+    needs:
+      [
+        push_previous_amd64,
+        push_previous_i386,
+        push_previous_arm64,
+        push_previous_armhf,
+        push_previous_riscv64,
+      ]
     runs-on: nephnet-fast
     continue-on-error: true
     steps:
