@@ -24,7 +24,7 @@ purposes of keeping permissions sane on the mounted data volume.
 
 ## Supported Tags
 
-- `nxb-alpine:3.21-3.2.0.2`: Alpine 3.21 w/ s6-overlay 3.2.0.2
+- `nxb-alpine:3.21-3.2.1.0`: Alpine 3.21 w/ s6-overlay 3.2.1.0
 - `nxb-alpine:3.20-3.2.0.2`: Alpine 3.20 w/ s6-overlay 3.2.0.2
 - `nxb-alpine:3.19-3.1.6.2`: Alpine 3.19 w/ s6-overlay 3.1.6.2
 - `nxb-alpine:3.18-3.1.6.2`: Alpine 3.18 w/ s6-overlay 3.1.6.2

@@ -5,7 +5,7 @@
 
 FROM code.nephatrine.net/nephnet/nxb-alpine:3.21 AS builder
 
-ARG S6_OVERLAY_VERSION=v3.2.0.2
+ARG S6_OVERLAY_VERSION=v3.2.1.0
 # hadolint ignore=SC2016
 RUN git -C /root clone -b "$S6_OVERLAY_VERSION" --single-branch --depth=1 https://github.com/just-containers/s6-overlay.git \
   && sed -i 's~=$(TOOLCHAIN_PATH)/bin/$(ARCH)-~=/usr/bin/$(ARCH)-~g' /root/s6-overlay/mk/bearssl.mk \

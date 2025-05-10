@@ -156,7 +156,7 @@ jobs:
         id: manifest
         run: |
           export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.21-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-riscv64"
-          for manifestName in 3.21-3.2.0.2 3.21 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
@@ -164,7 +164,7 @@ jobs:
         if: steps.manifest.outcome != 'success'
         run: |
           export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.21-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-riscv64"
-          for manifestName in 3.21-3.2.0.2 3.21 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
@@ -197,7 +197,7 @@ jobs:
         id: manifest
         run: |
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6-3.21 --amend nephatrine/ia32:alpine-s6-3.21 --amend nephatrine/arm64:alpine-s6-3.21 --amend nephatrine/armv7:alpine-s6-3.21 --amend nephatrine/riscv64:alpine-s6-3.21"
-          for manifestName in 3.21-3.2.0.2 3.21 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
@@ -205,7 +205,7 @@ jobs:
         if: steps.manifest.outcome != 'success'
         run: |
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6-3.21 --amend nephatrine/ia32:alpine-s6-3.21 --amend nephatrine/arm64:alpine-s6-3.21 --amend nephatrine/armv7:alpine-s6-3.21 --amend nephatrine/riscv64:alpine-s6-3.21"
-          for manifestName in 3.21-3.2.0.2 3.21 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
