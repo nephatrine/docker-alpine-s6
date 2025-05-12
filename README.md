@@ -47,7 +47,7 @@ purposes of keeping permissions sane on the mounted data volume.
 
 ```yaml
 services:
-  alpine:
+  alpine-s6:
     image: nephatrine/alpine-s6:latest
     container_name: alpine-s6
     environment:
@@ -55,7 +55,7 @@ services:
       PUID: 1000
       PGID: 1000
     volumes:
-      - /mnt/containers/alpine:/mnt/config
+      - /mnt/containers/alpine-s6:/mnt/config
 ```
 
 ### docker run

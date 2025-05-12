@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 services:
-  alpine:
+  alpine-s6:
     build: .
     container_name: alpine-s6
     environment:
@@ -10,4 +10,4 @@ services:
       PUID: 1000
       PGID: 1000
     volumes:
-      - /mnt/containers/alpine:/mnt/config
+      - /mnt/containers/alpine-s6:/mnt/config
