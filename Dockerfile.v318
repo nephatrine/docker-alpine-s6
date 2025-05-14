@@ -33,7 +33,7 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
   && apk --update upgrade --no-cache \
-  && apk add --no-cache bash ca-certificates coreutils curl logrotate openssl shadow tzdata \
+  && apk add --no-cache bash ca-certificates coreutils curl logrotate openssl setarch shadow tzdata \
   && rm -f /etc/logrotate.d/acpid \
   && mkdir -p /mnt/config \
   && useradd -u 1000 -g users -d /mnt/config/home -s /sbin/nologin guardian \
