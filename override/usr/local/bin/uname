@@ -1,6 +1,6 @@
 #!/bin/bash
 # SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: CC0-1.0
 
 if [ "$(cat /etc/apk/arch)" = "x86" ]; then
   /usr/bin/setarch i386 /bin/uname "$@"
