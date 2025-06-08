@@ -19,7 +19,6 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
   && if [ "$(uname -m)" = "i686" ]; then ARCH_TRIPLET="i586-alpine-linux-musl"; fi \
   && if [ "$(uname -m)" = "armv7l" ]; then ARCH_TRIPLET="armv7-alpine-linux-musleabihf"; fi \
   && if [ "$(uname -m)" = "armv8l" ]; then ARCH_TRIPLET="armv7-alpine-linux-musleabihf"; fi \
-  && export ARCH_TRIPLET \
   && ln -s ar "/usr/bin/${ARCH_TRIPLET}-ar" \
   && ln -s ranlib "/usr/bin/${ARCH_TRIPLET}-ranlib" \
   && ln -s strip "/usr/bin/${ARCH_TRIPLET}-strip" \
