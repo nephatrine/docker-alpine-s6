@@ -22,6 +22,10 @@ don't bother including like cron, logrotate, and bash. It also includes a
 non-root userid which can be mapped to a userid outside the container for the
 purposes of keeping permissions sane on the mounted data volume.
 
+## Supported Tags
+
+- `alpine-s6:3.21-3.2.1.0`: Alpine 3.21 w/ s6-overlay 3.2.1.0
+
 ## Software
 
 - [Alpine Linux](https://alpinelinux.org/)
