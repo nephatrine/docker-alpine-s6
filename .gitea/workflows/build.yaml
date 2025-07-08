@@ -64,14 +64,14 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-${{matrix.nephhub}}
+          tags: code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-${{matrix.nephhub}}
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:alpine-s6
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:alpine-s6,mode=max
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "FAIL: build_images (3.21; ${{matrix.platform}})"
+          title: "FAIL: build_images (3.22; ${{matrix.platform}})"
           webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
   push_images:
     needs: [build_images]
@@ -114,19 +114,19 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
-          docker tag code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:alpine-s6
-          docker rmi code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-${{matrix.nephhub}}
+          docker pull code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
+          docker tag code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:alpine-s6
+          docker rmi code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-${{matrix.nephhub}}
           docker push nephatrine/${{matrix.dockerhub}}:alpine-s6
           docker rmi nephatrine/${{matrix.dockerhub}}:alpine-s6
       - name: Clean Up
         if: failure()
-        run: docker rmi nephatrine/${{matrix.dockerhub}}:alpine-s6-3.21-3.2.1.0
+        run: docker rmi nephatrine/${{matrix.dockerhub}}:alpine-s6-3.22-3.2.1.0
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "FAIL: push_images (3.21; ${{matrix.platform}})"
+          title: "FAIL: push_images (3.22; ${{matrix.platform}})"
           webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
   build_manifest:
     needs: [build_images]
@@ -155,21 +155,21 @@ jobs:
         continue-on-error: true
         id: manifest
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-riscv64"
-          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-riscv64"
+          for manifestName in 3.22-3.2.1.0 3.22 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
       - name: Retry Docker Manifest
         if: steps.manifest.outcome != 'success'
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.21-3.2.1.0-riscv64"
-          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-amd64 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-ia32 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-arm64 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-arm32 --amend code.nephatrine.net/nephnet/alpine-s6:3.22-3.2.1.0-riscv64"
+          for manifestName in 3.22-3.2.1.0 3.22 3 latest; do docker manifest rm code.nephatrine.net/nephnet/alpine-s6:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "FAIL: build_manifest (3.21)"
+          title: "FAIL: build_manifest (3.22)"
           webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
   push_manifest:
     needs: [push_images]
@@ -197,7 +197,7 @@ jobs:
         id: manifest
         run: |
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6 --amend nephatrine/ia32:alpine-s6 --amend nephatrine/arm64:alpine-s6 --amend nephatrine/armv7:alpine-s6 --amend nephatrine/riscv64:alpine-s6"
-          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          for manifestName in 3.22-3.2.1.0 3.22 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
         run: sleep 60
@@ -205,12 +205,12 @@ jobs:
         if: steps.manifest.outcome != 'success'
         run: |
           export IMAGELIST="--amend nephatrine/amd64:alpine-s6 --amend nephatrine/ia32:alpine-s6 --amend nephatrine/arm64:alpine-s6 --amend nephatrine/armv7:alpine-s6 --amend nephatrine/riscv64:alpine-s6"
-          for manifestName in 3.21-3.2.1.0 3.21 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
+          for manifestName in 3.22-3.2.1.0 3.22 3 latest; do docker manifest rm nephatrine/alpine-s6:${manifestName} || true; docker manifest create nephatrine/alpine-s6:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/alpine-s6:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
         with:
-          title: "FAIL: push_manifest (3.21)"
+          title: "FAIL: push_manifest (3.22)"
           webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
   update_readme:
     needs: [push_manifest]

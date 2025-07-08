@@ -24,7 +24,7 @@ purposes of keeping permissions sane on the mounted data volume.
 
 ## Supported Tags
 
-- `alpine-s6:3.21-3.2.1.0`: Alpine 3.21 w/ s6-overlay 3.2.1.0
+- `alpine-s6:3.22-3.2.1.0`: Alpine 3.22 w/ s6-overlay 3.2.1.0
 
 ## Software
 
