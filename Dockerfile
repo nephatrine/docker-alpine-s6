@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2019-2026 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 # hadolint global ignore=DL3018
 
-FROM code.nephatrine.net/nephnet/nxb-alpine:3.22 AS builder
+FROM code.nephatrine.net/nephnet/nxb-alpine:3.23 AS builder
 
 ARG S6_OVERLAY_VERSION=v3.2.1.0
 # hadolint ignore=SC2016
@@ -27,7 +27,7 @@ RUN echo "====== COMPILE S6-OVERLAY ======" \
   && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) syslogd-overlay-noarch \
   && mv "/root/s6-overlay/output/rootfs-overlay-${ARCH_TRIPLET}" /root/s6-overlay/output/rootfs-overlay-arch
 
-FROM alpine:3.22
+FROM alpine:3.23
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
