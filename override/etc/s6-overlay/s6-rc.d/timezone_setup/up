@@ -1,12 +1,12 @@
 #!/command/execlineb
-# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2019-2026 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 # shellcheck disable=all
 
-backtick TZ { /command/with-contenv /bin/bash -c "/bin/echo ${TZ:-"America/New_York"}" }
+backtick TZ { /command/with-contenv /bin/bash -c "echo ${TZ:-"America/New_York"}" }
 importas tz TZ
 
-if { /usr/bin/test -f "/usr/share/zoneinfo/${tz}" }
+if { test -f "/usr/share/zoneinfo/${tz}" }
 foreground { /bin/ln -snf "/usr/share/zoneinfo/${tz}" /etc/localtime }
-foreground { redirfd -w 1 /etc/timezone /bin/echo "${tz}" }
+foreground { redirfd -w 1 /etc/timezone echo "${tz}" }

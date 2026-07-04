@@ -1,5 +1,5 @@
 #!/command/with-contenv /bin/sh
-# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2019-2026 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 # shellcheck shell=sh
@@ -8,26 +8,28 @@
 EXITVALUE=0
 
 if [ ! -d /mnt/config/log ]; then
-  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
+	/command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
 fi
 if [ -f /mnt/config/etc/logrotate.conf ] && [ -d /mnt/config/log ]; then
-  cd /mnt/config/log || exit 1
-  /usr/bin/test -e /mnt/config/log/logrotate.status || /command/s6-setuidgid guardian /bin/touch /mnt/config/log/logrotate.status
-  /usr/bin/head -1 /mnt/config/log/logrotate.status | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/log/logrotate.clean
-  /bin/sed 's/"//g' /mnt/config/log/logrotate.status | while read -r logfile date; do
-    [ -e "$logfile" ] && echo "\"$logfile\" $date"
-  done | /command/s6-setuidgid guardian /usr/bin/tee -a /mnt/config/log/logrotate.clean
-  /command/s6-setuidgid guardian /bin/mv /mnt/config/log/logrotate.clean /mnt/config/log/logrotate.status
+	cd /mnt/config/log || exit 1
+	test -e /mnt/config/log/logrotate.status || /command/s6-setuidgid guardian /bin/touch /mnt/config/log/logrotate.status
+	/usr/bin/head -1 /mnt/config/log/logrotate.status | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/log/logrotate.clean
+	/bin/sed 's/"//g' /mnt/config/log/logrotate.status | while read -r logfile date; do
+		[ -e "$logfile" ] && echo "\"$logfile\" $date"
+	done | /command/s6-setuidgid guardian /usr/bin/tee -a /mnt/config/log/logrotate.clean
+	/command/s6-setuidgid guardian /bin/mv /mnt/config/log/logrotate.clean /mnt/config/log/logrotate.status
 
-  if [ -f /etc/conf.d/logrotate ]; then
-    . /etc/conf.d/logrotate
-  fi
-  if [ -x /usr/bin/cpulimit ] && [ -n "$CPULIMIT" ]; then
-    _cpulimit="/usr/bin/cpulimit --limit=$CPULIMIT"
-  fi
+	if [ -f /etc/conf.d/logrotate ]; then
+		. /etc/conf.d/logrotate
+	fi
+	if [ -x /usr/bin/cpulimit ] && [ -n "$CPULIMIT" ]; then
+		_cpulimit="/usr/bin/cpulimit --limit=$CPULIMIT"
+	fi
 
-  $_cpulimit /command/s6-setuidgid guardian /usr/sbin/logrotate -s /mnt/config/log/logrotate.status -v /mnt/config/etc/logrotate.conf
-  EXITVALUE=$?
+	$_cpulimit /command/s6-setuidgid guardian /usr/sbin/logrotate -s /mnt/config/log/logrotate.status -v /mnt/config/etc/logrotate.conf
+	EXITVALUE=$?
 fi
 
 exit $EXITVALUE
+
+# vim:ft=sh

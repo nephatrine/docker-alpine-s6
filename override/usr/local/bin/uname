@@ -1,10 +1,10 @@
 #!/bin/sh
-# SPDX-FileCopyrightText: 2019-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2019-2026 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: CC0-1.0
 
-if [ "$(cat /etc/apk/arch)" = "x86" ]; then
+if [ "$(/bin/cat /etc/apk/arch)" = "x86" ]; then
   /usr/bin/setarch i386 /bin/uname "$@"
-elif [ "$(cat /etc/apk/arch)" = "armv7" ]; then
+elif [ "$(/bin/cat /etc/apk/arch)" = "armv7" ]; then
   /usr/bin/setarch arm /bin/uname "$@"
 else
   /bin/uname "$@"
